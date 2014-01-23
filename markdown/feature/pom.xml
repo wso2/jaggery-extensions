@@ -37,7 +37,7 @@
                 <version>${maven-resources-plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>prefilter-resources</id>
+                        <id>copy-p2.inf</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -51,6 +51,18 @@
                                         <include>p2.inf</include>
                                     </includes>
                                 </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-module-source</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>src/main/resources/module</outputDirectory>
+                            <resources>
                                 <resource>
                                     <directory>../module</directory>
                                 </resource>
