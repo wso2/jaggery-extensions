@@ -30,6 +30,14 @@
     <packaging>pom</packaging>
     <name>oauth Module - Feature</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.jaggeryjs.modules</groupId>
+            <artifactId>org.jaggeryjs.modules.oauth</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -85,6 +93,9 @@
                         <configuration>
                             <id>org.jaggeryjs.modules.oauth</id>
                             <propertiesFile>etc/feature.properties</propertiesFile>
+                            <bundles>
+                                <bundleDef>org.jaggeryjs.modules:org.jaggeryjs.modules.oauth</bundleDef>
+                            </bundles>
                         </configuration>
                     </execution>
                 </executions>
