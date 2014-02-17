@@ -1,5 +1,5 @@
 instructions.configure = \
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../modules); \
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../modules/email); \
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/email_${feature.version}/module/,target:${installFolder}/../../../modules/email,overwrite:false);\
-org.eclipse.equinox.p2.touchpoint.natives.remove(path:${installFolder}/../features/email_${feature.version}/module);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/org.jaggeryjs.modules.email_${feature.version}/module/,target:${installFolder}/../../../modules/email,overwrite:false);\
+org.eclipse.equinox.p2.touchpoint.natives.remove(path:${installFolder}/../features/org.jaggeryjs.modules.email_${feature.version}/module);\

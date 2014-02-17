@@ -1,5 +1,5 @@
 instructions.configure = \
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../modules); \
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../modules/handlebars); \
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/handlebars_${feature.version}/module/,target:${installFolder}/../../../modules/handlebars,overwrite:false);\
-org.eclipse.equinox.p2.touchpoint.natives.remove(path:${installFolder}/../features/handlebars_${feature.version}/module);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/org.jaggeryjs.modules.handlebars_${feature.version}/module/,target:${installFolder}/../../../modules/handlebars,overwrite:false);\
+org.eclipse.equinox.p2.touchpoint.natives.remove(path:${installFolder}/../features/org.jaggeryjs.modules.handlebars_${feature.version}/module);\
