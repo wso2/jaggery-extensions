@@ -1,4 +1,4 @@
-package org.jaggeryjs.hostobjects.process;
+package org.jaggeryjs.modules.process;
 
 /*
  * Copyright 2006,2007 WSO2, Inc. http://www.wso2.org
