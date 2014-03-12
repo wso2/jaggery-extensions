@@ -21,9 +21,14 @@ var registry = registry || {};
         if (resource instanceof Comment) {
             return String(resource.getText());
         }
-        var stream = resource.getContentStream();
-        if (stream) {
-            return new Stream(stream);
+        try {
+            var stream = resource.getContentStream();
+            if (stream) {
+                return new Stream(stream);
+            }
+        } catch (e) {
+            log.error(e);
+            //this is because getContentStream() throws an exception when content is empty
         }
         return String(resource.content);
     };
@@ -190,7 +195,7 @@ var registry = registry || {};
             if (resource.content instanceof Stream) {
                 res.contentStream = resource.content.getStream();
             } else {
-                res.content = resource.content || null;
+                res.content = resource.content || '';
             }
             res.mediaType = resource.mediaType || null;
         }

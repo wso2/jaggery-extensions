@@ -29,4 +29,12 @@
 
     server.home = 'file:///' + require('process').getProperty('carbon.home').replace(/[\\]/g, '/').replace(/^[\/]/g, '');
 
+    server.host = process.getProperty('server.host');
+
+    server.ip = process.getProperty('carbon.local.ip');
+
+    server.httpPort = process.getProperty('http.port');
+
+    server.httpsPort = process.getProperty('https.port');
+
 }(server));
