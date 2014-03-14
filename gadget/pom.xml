@@ -44,6 +44,16 @@
         </snapshotRepository>
     </distributionManagement>
 
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>${maven-wagon-ssh.version}</version>
+            </extension>
+        </extensions>
+    </build>
+
     <properties>
         <maven-wagon-ssh.version>2.1</maven-wagon-ssh.version>
     </properties>
