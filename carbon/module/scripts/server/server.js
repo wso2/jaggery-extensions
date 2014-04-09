@@ -90,7 +90,7 @@
       Usage:- Scenario where the address of the server is required based on host or ip
       Parameters:- Transport is https or http.
     */
-    server.getAddress = function(transport){
+    server.address = function(transport){
         var  host = process.getProperty('server.host'),
         ip = process.getProperty('carbon.local.ip');
         var port;
