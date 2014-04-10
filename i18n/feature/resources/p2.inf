@@ -1,5 +1,4 @@
 instructions.configure = \
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../modules); \
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../modules/i18n); \
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/org.jaggeryjs.modules.i18n_${feature.version}/module/,target:${installFolder}/../../../modules/i18n,overwrite:false);\
-org.eclipse.equinox.p2.touchpoint.natives.remove(path:${installFolder}/../features/org.jaggeryjs.modules.i18n_${feature.version}/module);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/org.jaggeryjs.modules.i18n_${feature.version}/module/,target:${installFolder}/../../../modules/i18n,overwrite:true);\
