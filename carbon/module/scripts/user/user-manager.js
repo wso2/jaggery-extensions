@@ -149,12 +149,12 @@
      * @param action
      */
     UserManager.prototype.denyRole = function (role, permission, action) {
-        var deny = this.authorizer.denyRole;
+        var that = this;
         if (permission instanceof String || typeof permission === 'string') {
-            deny(role, permission, action);
+            that.authorizer.denyRole(role, permission, action);
         } else {
             processPerms(permission, function (id, action) {
-                deny(role, id, action);
+                that.authorizer.denyRole(role, id, action);
             });
         }
     };
