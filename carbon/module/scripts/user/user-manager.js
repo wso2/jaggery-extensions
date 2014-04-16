@@ -95,6 +95,9 @@
         this.manager['addRole(java.lang.String,java.lang.String[],org.wso2.carbon.user.api.Permission[])']
             (role, users, perms);
     };
+    UserManager.prototype.clearResourceAuthorizations = function (resource) {
+        this.authorizer.clearResourceAuthorizations(resource)
+    };
 
     UserManager.prototype.removeRole = function (role) {
         this.manager.deleteRole(role);
