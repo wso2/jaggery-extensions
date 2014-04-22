@@ -95,6 +95,9 @@
         this.manager['addRole(java.lang.String,java.lang.String[],org.wso2.carbon.user.api.Permission[])']
             (role, users, perms);
     };
+    UserManager.prototype.clearResourceAuthorizations = function (resource) {
+        this.authorizer.clearResourceAuthorizations(resource)
+    };
 
     UserManager.prototype.removeRole = function (role) {
         this.manager.deleteRole(role);
@@ -149,12 +152,12 @@
      * @param action
      */
     UserManager.prototype.denyRole = function (role, permission, action) {
-        var deny = this.authorizer.denyRole;
+        var that = this;
         if (permission instanceof String || typeof permission === 'string') {
-            deny(role, permission, action);
+            that.authorizer.denyRole(role, permission, action);
         } else {
             processPerms(permission, function (id, action) {
-                deny(role, id, action);
+                that.authorizer.denyRole(role, id, action);
             });
         }
     };

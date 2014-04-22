@@ -333,11 +333,13 @@ var registry = registry || {};
     Registry.prototype.addProperty = function (path, name, value) {
         var resource = this.registry.get(path);
         resource.addProperty(name, value);
+        this.registry.put(path, resource);
     };
 
     Registry.prototype.removeProperty = function (path, name, value) {
         var resource = this.registry.get(path);
         (value ? resource.removePropertyValue(name, value) : resource.removeProperty(name));
+        this.registry.put(path, resource);
     };
 
     Registry.prototype.properties = function (path) {
