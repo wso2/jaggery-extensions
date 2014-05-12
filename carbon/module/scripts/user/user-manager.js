@@ -37,6 +37,9 @@
     UserManager.prototype.addUser = function (username, password, roles, claims, profile) {
         this.manager.addUser(username, password, roles || [], claims || null, profile);
     };
+    UserManager.prototype.changePassword = function (username, new_password, old_password) {
+        this.manager.updateCredential(username, new_password, old_password);
+    };
 
     UserManager.prototype.removeUser = function (username) {
         this.manager.deleteUser(username);
