@@ -128,6 +128,7 @@ public class WSRequestHostObject extends ScriptableObject {
 
     private String mep = IN_OUT;
 
+    private boolean robust = false;
     private Scriptable soapHeaders = null;
 
     private Scriptable httpHeaders = null;
@@ -324,7 +325,11 @@ public class WSRequestHostObject extends ScriptableObject {
                 if (wsRequest.wsdlMode) {
                     //                    setSSLProperties(wsRequest);
                     if (IN_ONLY.equalsIgnoreCase(wsRequest.mep)) {
+                        if (wsRequest.robust) {
+                            wsRequest.sender.sendRobust(operationName, payloadElement);
+                        } else {
                         wsRequest.sender.fireAndForget(operationName, payloadElement);
+                        }
                         wsRequest.readyState = 4;
                     } else {
                         wsRequest.sender
@@ -334,7 +339,11 @@ public class WSRequestHostObject extends ScriptableObject {
                 } else {
                     //                    setSSLProperties(wsRequest);
                     if (IN_ONLY.equalsIgnoreCase(wsRequest.mep)) {
+                        if (wsRequest.robust) {
+                            wsRequest.sender.sendRobust(payloadElement);
+                        } else {
                         wsRequest.sender.fireAndForget(payloadElement);
+                        }
                         wsRequest.readyState = 4;
                     } else {
                         wsRequest.sender.sendReceiveNonBlocking(payloadElement, callback);
@@ -348,7 +357,11 @@ public class WSRequestHostObject extends ScriptableObject {
                 if (wsRequest.wsdlMode) {
                     //                    setSSLProperties(wsRequest);
                     if (IN_ONLY.equalsIgnoreCase(wsRequest.mep)) {
+                        if (wsRequest.robust) {
+                            wsRequest.sender.sendRobust(operationName, payloadElement);
+                        } else {
                         wsRequest.sender.fireAndForget(operationName, payloadElement);
+                        }
                     } else {
                         wsRequest.updateResponse(
                                 wsRequest.sender.sendReceive(operationName, payloadElement));
@@ -357,7 +370,11 @@ public class WSRequestHostObject extends ScriptableObject {
                 } else {
                     //                    setSSLProperties(wsRequest);
                     if (IN_ONLY.equalsIgnoreCase(wsRequest.mep)) {
+                        if (wsRequest.robust) {
+                            wsRequest.sender.sendRobust(payloadElement);
+                        } else {
                         wsRequest.sender.fireAndForget(payloadElement);
+                        }
                     } else {
                         wsRequest.updateResponse(
                                 wsRequest.sender.sendReceive(operationName, payloadElement));
@@ -576,6 +593,11 @@ public class WSRequestHostObject extends ScriptableObject {
                 timeout = Integer.parseInt(timeoutObject.toString());
             }
 
+            Object robustObject = optionsObj.get("robust", optionsObj);
+            if (robustObject != null && !(robustObject instanceof Undefined) &&
+                    !(robustObject instanceof UniqueTag)) {
+                wsRequest.robust = Boolean.valueOf(robustObject.toString());
+            }
             Object soapHeadersObject = optionsObj.get("SOAPHeaders", optionsObj);
             if (soapHeadersObject != null && !(soapHeadersObject instanceof Undefined) &&
                     !(soapHeadersObject instanceof UniqueTag) &&
