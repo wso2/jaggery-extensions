@@ -1,4 +1,4 @@
 jaggery-extensions
 ==================
 
-Extensions repository for Jaggery
+Extensions repository for jaggeryjs.org
