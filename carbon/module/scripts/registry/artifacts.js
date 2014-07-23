@@ -232,7 +232,9 @@
      }
      */
     ArtifactManager.prototype.add = function (options) {
-        this.manager.addGenericArtifact(createArtifact(this.manager, options));
+        var asset=createArtifact(this.manager, options);
+        this.manager.addGenericArtifact(asset);
+        return asset.getId();
     };
 
     ArtifactManager.prototype.update = function (options) {
