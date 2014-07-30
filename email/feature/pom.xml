@@ -34,7 +34,7 @@
         <dependency>
             <groupId>org.jaggeryjs.modules</groupId>
             <artifactId>org.jaggeryjs.modules.email</artifactId>
-            <version>${pom.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
