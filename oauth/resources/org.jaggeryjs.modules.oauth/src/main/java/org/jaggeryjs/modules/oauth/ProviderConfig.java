@@ -9,6 +9,7 @@ public class ProviderConfig {
     private String callback_url;
 	private String api_key;
     private String api_secret;
+    private String scope;
 
     public ProviderConfig() {
     }
@@ -67,5 +68,13 @@ public class ProviderConfig {
 
     public void setApi_secret(String api_secret) {
         this.api_secret = api_secret;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 }
