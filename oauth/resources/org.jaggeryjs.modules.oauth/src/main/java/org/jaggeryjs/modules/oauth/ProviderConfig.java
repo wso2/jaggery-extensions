@@ -1,5 +1,7 @@
 package org.jaggeryjs.modules.oauth;
 
+import java.util.HashMap;
+
 public class ProviderConfig {
 
     private Float oauth_version;
@@ -9,7 +11,7 @@ public class ProviderConfig {
     private String callback_url;
 	private String api_key;
     private String api_secret;
-    private String scope;
+    private HashMap<String, String> authorize_params;
 
     public ProviderConfig() {
     }
@@ -70,11 +72,11 @@ public class ProviderConfig {
         this.api_secret = api_secret;
     }
 
-    public String getScope() {
-        return scope;
+    public HashMap getAuthorize_params() {
+        return authorize_params;
     }
 
-    public void setScope(String scope) {
-        this.scope = scope;
+    public void setAuthorize_params(HashMap authorize_params) {
+        this.authorize_params = authorize_params;
     }
 }

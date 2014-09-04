@@ -6,12 +6,15 @@ import org.scribe.utils.Preconditions;
 
 import org.scribe.utils.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class GenericOAuth20Api extends DefaultApi20 {
     private String AUTHORIZE_URL;
     private String ACCESS_TOKEN_EP;
     private String CALLBACK_URL;
-    private String SCOPE;
+    private HashMap<String, String> AUTHORIZE_PARAMS;
 
 	public void setAuthorizeUrl(String authorizeUrl) {
         this.AUTHORIZE_URL = authorizeUrl;
@@ -34,30 +37,33 @@ public class GenericOAuth20Api extends DefaultApi20 {
 		CALLBACK_URL = cALLBACK_URL;
 	}
 
-    public String getScope() {
-        return SCOPE;
+    public HashMap<String, String> getAuthorizeParams() {
+        return AUTHORIZE_PARAMS;
     }
 
-    public void setScope(String scope) {
-        this.SCOPE = scope;
+    public void setAuthorizeParams(HashMap authirizeParams) {
+        this.AUTHORIZE_PARAMS = authirizeParams;
     }
 
     @Override
     public String getAuthorizationUrl(OAuthConfig config) {
         Preconditions.checkValidUrl(getCallBackUrl(), "Must provide a valid url as callback.");
 
-        // Append scope if present
-        if (getScope() != null && !getScope().trim().equals("")) {
-            return AUTHORIZE_URL
-                    + "?client_id=" + config.getApiKey()
-                    + "&response_type=code"
-                    + "&redirect_uri=" + OAuthEncoder.encode(getCallBackUrl())
-                    + "&scope=" + OAuthEncoder.encode(this.getScope());
-        } else {
-            return AUTHORIZE_URL
+        String authorizeUrl = AUTHORIZE_URL
                     + "?client_id=" + config.getApiKey()
                     + "&response_type=code"
                     + "&redirect_uri=" + OAuthEncoder.encode(getCallBackUrl());
+
+        // Append additional authorizing_params if present
+        if (getAuthorizeParams() != null) {
+            for (Map.Entry<String, String> entry : getAuthorizeParams().entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+
+                authorizeUrl += "&" + key + "=" + OAuthEncoder.encode(value);
+            }
         }
+
+        return authorizeUrl;
     }
 }

@@ -100,7 +100,7 @@ public class OAuthHostObject extends ScriptableObject {
                     oauth20Api.setAccessTokenEP(providerConfig.getAccess_token_url());
                     oauth20Api.setAuthorizeUrl(providerConfig.getAuthorization_url());
                     oauth20Api.setCallBackUrl(providerConfig.getCallback_url());
-                    oauth20Api.setScope(providerConfig.getScope());
+                    oauth20Api.setAuthorizeParams(providerConfig.getAuthorize_params());
                     oauthho.oauthService = new ServiceBuilder()
                             .provider(oauth20Api)
                             .apiKey(oauthho.apiKey)
