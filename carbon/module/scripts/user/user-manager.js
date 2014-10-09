@@ -165,4 +165,15 @@
         }
     };
 
+    /**
+     * getAllowedUIResources      This will return all allowed UI resource for given user
+     * @param  userName           User name
+     * @param  permissionRootPath User permission root path
+     * @return                    Array with permission resource paths
+     */
+    UserManager.prototype.getAllowedUIResources = function(userName, permissionRootPath){
+        var allowedResources = this.authorizer.getAllowedUIResourcesForUser(userName, permissionRootPath);
+        return allowedResources;
+    };
+
 }(server, user));
