@@ -25,7 +25,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <name>ws Module</name>
-    <description>Caramel Module</description>
+    <description>ws Module</description>
 
     <modules>
         <module>resources/org.jaggeryjs.modules.ws</module>
