@@ -268,7 +268,8 @@
         if (!artifact) {
             throw new Error('Specified artifact cannot be found : ' + JSON.stringify(options));
         }
-        artifact.detachLifecycle();
+	    var lifecycleName = getLifecycleName(artifact);
+        artifact.detachLifecycle(lifecycleName);
     };
 
     /*
@@ -282,7 +283,8 @@
             throw new Error('Specified artifact cannot be found : ' + JSON.stringify(options));
         }
         //checkListItems = artifact.getAllCheckListItemNames();
-        artifact.invokeAction(state);
+	    var lifecycleName = getLifecycleName(artifact);
+        artifact.invokeAction(state,lifecycleName);
     };
 
     /*
@@ -305,8 +307,8 @@
      */
     ArtifactManager.prototype.getCheckListItemNames = function (options) {
         var artifact = getArtifactFromImage(this.manager, options);
-
-        var checkListItems = artifact.getAllCheckListItemNames() || [];
+	    var lifecycleName = getLifecycleName(artifact);
+        var checkListItems = artifact.getAllCheckListItemNames(lifecycleName) || [];
 
         var checkListItemArray = [];
 
@@ -330,7 +332,7 @@
     ArtifactManager.prototype.isItemChecked = function (index, options) {
 
         var artifact = getArtifactFromImage(this.manager, options);
-
+	    var lifecycleName = getLifecycleName(artifact);
         var checkListItems = artifact.getAllCheckListItemNames();
 
         var checkListLength = checkListItems.length;
@@ -338,8 +340,7 @@
         if ((index < 0) || (index > checkListLength)) {
             throw "The index value: " + index + " must be between 0 and " + checkListLength + ".Please refer to the lifecycle definition in the registry.xml for the number of check list items.";
         }
-
-        var result = artifact.isLCItemChecked(index);
+        var result = artifact.isLCItemChecked(index,lifecycleName);
 
         return result;
     };
@@ -354,7 +355,7 @@
     ArtifactManager.prototype.checkItem = function (index, options) {
 
         var artifact = getArtifactFromImage(this.manager, options);
-
+	    var lifecycleName = getLifecycleName(artifact);
         var checkListItems = artifact.getAllCheckListItemNames();
 
         var checkListLength = checkListItems.length;
@@ -362,8 +363,7 @@
         if ((index < 0) || (index > checkListLength)) {
             throw "The index value: " + index + " must be between 0 and " + checkListLength + ".Please refer to the lifecycle definition in the registry.xml for the number of check list items.";
         }
-
-        artifact.checkLCItem(index);
+        artifact.checkLCItem(index,lifecycleName);
     };
 
     /*
@@ -376,7 +376,7 @@
     ArtifactManager.prototype.uncheckItem = function (index, options) {
 
         var artifact = getArtifactFromImage(this.manager, options);
-
+	    var lifecycleName = getLifecycleName(artifact);
         var checkListItems = artifact.getAllCheckListItemNames();
 
         var checkListLength = checkListItems.length;
@@ -384,8 +384,7 @@
         if ((index < 0) || (index > checkListLength)) {
             throw "The index value: " + index + " must be between 0 and " + checkListLength + ".Please refer to the lifecycle definition in the registry.xml for the number of check list items.";
         }
-
-        artifact.uncheckLCItem(index);
+        artifact.uncheckLCItem(index,lifecycleName);
     };
 
     /*
@@ -398,7 +397,8 @@
         if (!artifact) {
             throw new Error('Specified artifact cannot be found : ' + JSON.stringify(options));
         }
-        return artifact.getAllLifecycleActions() || [];
+	    var lifecycleName = getLifecycleName(artifact);
+        return artifact.getAllLifecycleActions(lifecycleName) || [];
     };
 
     /*
@@ -573,4 +573,24 @@
         return artifact;
     };
 
+    /**
+     * The function was introduced as a fix to accomadate the goveerance API
+     * changes to support multiple lifecycles
+     * @param  {Object artifact A governance artifact instance
+     * @return {String}          The name of the default lifecycle
+     */
+    var getLifecycleName = function(artifact){
+        var lifecycleName;
+        if(!artifact){
+            throw "The artifact is null, cannot retrieve the lifecycle name for lifecycle operations";
+        }
+        try {
+            lifecycleName = artifact.getLifecycleName();
+        }
+        catch(e){
+            log.error(e);
+            throw e;
+        }
+        return lifecycleName;
+    };
 }(server, registry));
