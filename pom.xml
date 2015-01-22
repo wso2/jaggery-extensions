@@ -39,6 +39,7 @@
         <module>gadget</module>
         <module>uuid</module>
         <module>ws</module>
+        <module>sso</module>
         <module>jaggery-test</module>
     </modules>
 
