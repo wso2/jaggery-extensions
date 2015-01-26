@@ -26,7 +26,7 @@ var client = {};
 
 (function (client) {
 
-    var Util = Packages.org.wso2.store.sso.common.util.Util,
+    var Util = Packages.org.jaggeryjs.modules.sso.common.util.Util,
         carbon = require('carbon'),
         log = new Log();
 
@@ -72,7 +72,7 @@ var client = {};
     client.getEncodedSAMLAuthRequest = function (issuerId) {
         return Util.encode(
             Util.marshall(
-                new Packages.org.wso2.store.sso.common.builders.AuthReqBuilder().buildAuthenticationRequest(issuerId)
+                new Packages.org.jaggeryjs.modules.sso.common.builders.AuthReqBuilder().buildAuthenticationRequest(issuerId)
             ));
     };
 
@@ -82,8 +82,8 @@ var client = {};
     client.getEncodedSAMLLogoutRequest = function (user, sessionIndex, issuerId) {
         return Util.encode(
             Util.marshall(
-                new Packages.org.wso2.store.sso.common.builders.LogoutRequestBuilder().buildLogoutRequest(user, sessionIndex,
-                    Packages.org.wso2.store.sso.common.constants.SSOConstants.LOGOUT_USER,
+                new Packages.org.jaggeryjs.modules.sso.common.builders.LogoutRequestBuilder().buildLogoutRequest(user, sessionIndex,
+                    Packages.org.jaggeryjs.modules.sso.common.constants.SSOConstants.LOGOUT_USER,
                     issuerId)));
     };
 
