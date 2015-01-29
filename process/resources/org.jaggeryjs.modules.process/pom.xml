@@ -10,6 +10,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jaggeryjs.modules.process</groupId>
     <artifactId>org.jaggeryjs.modules.process</artifactId>
     <packaging>bundle</packaging>
     <name>Process HostObject</name>

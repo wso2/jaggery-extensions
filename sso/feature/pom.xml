@@ -33,7 +33,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jaggeryjs.modules</groupId>
+            <groupId>org.jaggeryjs.modules.sso</groupId>
             <artifactId>org.jaggeryjs.modules.sso</artifactId>
         </dependency>
     </dependencies>
@@ -92,7 +92,7 @@
                             <id>org.jaggeryjs.modules.sso</id>
                             <propertiesFile>etc/feature.properties</propertiesFile>
                             <bundles>
-                                <bundleDef>org.jaggeryjs.modules:org.jaggeryjs.modules.sso:${project.version}
+                                <bundleDef>org.jaggeryjs.modules.sso:org.jaggeryjs.modules.sso:${project.version}
                                 </bundleDef>
                             </bundles>
                         </configuration>

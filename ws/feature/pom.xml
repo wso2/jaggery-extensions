@@ -33,7 +33,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jaggeryjs.modules</groupId>
+            <groupId>org.jaggeryjs.modules.ws</groupId>
             <artifactId>org.jaggeryjs.modules.ws</artifactId>
         </dependency>
         <dependency>
@@ -108,7 +108,7 @@
                             <id>org.jaggeryjs.modules.ws</id>
                             <propertiesFile>etc/feature.properties</propertiesFile>
                             <bundles>
-                                <bundleDef>org.jaggeryjs.modules:org.jaggeryjs.modules.ws</bundleDef>
+                                <bundleDef>org.jaggeryjs.modules.ws:org.jaggeryjs.modules.ws</bundleDef>
                             </bundles>
                             <importBundles>
                                 <importBundleDef>org.apache.rampart.wso2:rampart-core</importBundleDef>

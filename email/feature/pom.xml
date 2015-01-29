@@ -33,7 +33,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jaggeryjs.modules</groupId>
+            <groupId>org.jaggeryjs.modules.email</groupId>
             <artifactId>org.jaggeryjs.modules.email</artifactId>
         </dependency>
     </dependencies>
@@ -92,7 +92,7 @@
                             <id>org.jaggeryjs.modules.email</id>
                             <propertiesFile>etc/feature.properties</propertiesFile>
                             <bundles>
-                                <bundleDef>org.jaggeryjs.modules:org.jaggeryjs.modules.email</bundleDef>
+                                <bundleDef>org.jaggeryjs.modules.email:org.jaggeryjs.modules.email</bundleDef>
                             </bundles>
                         </configuration>
                     </execution>

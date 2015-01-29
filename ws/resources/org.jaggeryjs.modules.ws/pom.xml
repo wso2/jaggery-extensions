@@ -10,6 +10,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jaggeryjs.modules.ws</groupId>
     <artifactId>org.jaggeryjs.modules.ws</artifactId>
     <packaging>bundle</packaging>
     <name>WSRequest HostObject</name>

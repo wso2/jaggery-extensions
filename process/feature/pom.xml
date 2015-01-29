@@ -33,7 +33,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jaggeryjs.modules</groupId>
+            <groupId>org.jaggeryjs.modules.process</groupId>
             <artifactId>org.jaggeryjs.modules.process</artifactId>
         </dependency>
     </dependencies>
@@ -92,7 +92,7 @@
                             <id>org.jaggeryjs.modules.process</id>
                             <propertiesFile>etc/feature.properties</propertiesFile>
                             <bundles>
-                                <bundleDef>org.jaggeryjs.modules:org.jaggeryjs.modules.process</bundleDef>
+                                <bundleDef>org.jaggeryjs.modules.process:org.jaggeryjs.modules.process</bundleDef>
                             </bundles>
                         </configuration>
                     </execution>

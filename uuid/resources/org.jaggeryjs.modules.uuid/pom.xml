@@ -10,6 +10,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jaggeryjs.modules.uuid</groupId>
     <artifactId>org.jaggeryjs.modules.uuid</artifactId>
     <packaging>bundle</packaging>
     <name>UUID HostObject</name>

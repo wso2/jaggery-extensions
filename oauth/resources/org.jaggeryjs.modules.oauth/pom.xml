@@ -10,6 +10,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jaggeryjs.modules.oauth</groupId>
     <artifactId>org.jaggeryjs.modules.oauth</artifactId>
     <packaging>bundle</packaging>
     <name>OAuth HostObject</name>

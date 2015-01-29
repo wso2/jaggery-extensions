@@ -33,7 +33,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jaggeryjs.modules</groupId>
+            <groupId>org.jaggeryjs.modules.oauth</groupId>
             <artifactId>org.jaggeryjs.modules.oauth</artifactId>
         </dependency>
     </dependencies>
@@ -92,7 +92,7 @@
                             <id>org.jaggeryjs.modules.oauth</id>
                             <propertiesFile>etc/feature.properties</propertiesFile>
                             <bundles>
-                                <bundleDef>org.jaggeryjs.modules:org.jaggeryjs.modules.oauth</bundleDef>
+                                <bundleDef>org.jaggeryjs.modules.oauth:org.jaggeryjs.modules.oauth</bundleDef>
                             </bundles>
                         </configuration>
                     </execution>

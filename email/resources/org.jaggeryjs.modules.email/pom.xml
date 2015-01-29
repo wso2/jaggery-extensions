@@ -9,6 +9,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jaggeryjs.modules.email</groupId>
     <artifactId>org.jaggeryjs.modules.email</artifactId>
     <packaging>bundle</packaging>
     <name>Email HostObject</name>

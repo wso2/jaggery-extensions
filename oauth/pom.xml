@@ -34,6 +34,7 @@
     <description>oauth Module</description>
 
     <modules>
+        <module>resources/org.jaggeryjs.modules.oauth</module>
         <module>feature</module>
     </modules>
 
@@ -46,7 +47,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.jaggeryjs.modules</groupId>
+                <groupId>org.jaggeryjs.modules.oauth</groupId>
                 <artifactId>org.jaggeryjs.modules.oauth</artifactId>
                 <version>${project.version}</version>
             </dependency>

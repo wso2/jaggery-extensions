@@ -47,7 +47,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.jaggeryjs.modules</groupId>
+                <groupId>org.jaggeryjs.modules.sso</groupId>
                 <artifactId>org.jaggeryjs.modules.sso</artifactId>
                 <version>${project.version}</version>
             </dependency>

@@ -49,7 +49,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.jaggeryjs.modules</groupId>
+                <groupId>org.jaggeryjs.modules.ws</groupId>
                 <artifactId>org.jaggeryjs.modules.ws</artifactId>
                 <version>${project.version}</version>
             </dependency>

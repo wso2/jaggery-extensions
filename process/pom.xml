@@ -34,6 +34,7 @@
     <description>process Module</description>
 
     <modules>
+        <module>resources/org.jaggeryjs.modules.process</module>
         <module>feature</module>
     </modules>
 
@@ -46,7 +47,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.jaggeryjs.modules</groupId>
+                <groupId>org.jaggeryjs.modules.process</groupId>
                 <artifactId>org.jaggeryjs.modules.process</artifactId>
                 <version>${project.version}</version>
             </dependency>
