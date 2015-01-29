@@ -35,14 +35,13 @@
         <dependency>
             <groupId>org.jaggeryjs.modules</groupId>
             <artifactId>org.jaggeryjs.modules.sso</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven-resources-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>copy-p2.inf</id>
@@ -82,7 +81,6 @@
             <plugin>
                 <groupId>org.wso2.maven</groupId>
                 <artifactId>carbon-p2-plugin</artifactId>
-                <version>${carbon.p2.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>p2-feature-generation</id>
@@ -94,7 +92,8 @@
                             <id>org.jaggeryjs.modules.sso</id>
                             <propertiesFile>etc/feature.properties</propertiesFile>
                             <bundles>
-                                <bundleDef>org.jaggeryjs.modules:org.jaggeryjs.modules.sso:${project.version}</bundleDef>
+                                <bundleDef>org.jaggeryjs.modules:org.jaggeryjs.modules.sso:${project.version}
+                                </bundleDef>
                             </bundles>
                         </configuration>
                     </execution>
@@ -122,18 +121,5 @@
             </plugin>
         </plugins>
     </build>
-    <properties>
-        <carbon.p2.plugin.version>1.5</carbon.p2.plugin.version>
-        <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
-        <handlebars.version>1.1.0-SNAPSHOT</handlebars.version>
-        <markdown.version>1.1.0-SNAPSHOT</markdown.version>
-        <sso.hostobjects.version>1.0.1</sso.hostobjects.version>
-    </properties>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>wso2-maven2-repository-1</id>
-            <url>http://dist.wso2.org/maven2</url>
-        </pluginRepository>
-    </pluginRepositories>
 </project>
