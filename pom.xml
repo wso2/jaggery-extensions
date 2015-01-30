@@ -69,7 +69,7 @@
         <carbon.kernel.version>4.3.0</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.3.0, 4.4.0)</carbon.kernel.imp.pkg.version>
 
-        <jaggery.version>0.9.0-SNAPSHOT</jaggery.version>
+        <project.jaggery.version>0.9.0-SNAPSHOT</project.jaggery.version>
         <jaggery.imp.pkg.version>[0.9.0-SNAPSHOT, 1.0.0-SNAPSHOT)</jaggery.imp.pkg.version>
 
         <rhino.version>1.7.0.R4.wso2v1</rhino.version>

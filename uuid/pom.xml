@@ -48,7 +48,7 @@
             <dependency>
                 <groupId>org.jaggeryjs</groupId>
                 <artifactId>org.jaggeryjs.scriptengine</artifactId>
-                <version>${jaggery.version}</version>
+                <version>${project.jaggery.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
