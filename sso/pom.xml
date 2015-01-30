@@ -76,11 +76,6 @@
                 <artifactId>org.wso2.carbon.core</artifactId>
                 <version>${carbon.kernel.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.hostobjects.sso</artifactId>
-                <version>${sso.hostobjects.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
