@@ -38,49 +38,4 @@
         <module>feature</module>
     </modules>
 
-    <properties>
-        <mail.version>1.4</mail.version>
-        <activation.version>1.1</activation.version>
-        <geronimo-servlet_3.0_spec.version>1.0</geronimo-servlet_3.0_spec.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jaggeryjs.modules.email</groupId>
-                <artifactId>org.jaggeryjs.modules.email</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>rhino.wso2</groupId>
-                <artifactId>js</artifactId>
-                <version>${rhino.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.utils</artifactId>
-                <version>${carbon.kernel.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jaggeryjs</groupId>
-                <artifactId>org.jaggeryjs.hostobjects.file</artifactId>
-                <version>${project.jaggery.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.activation</groupId>
-                <artifactId>activation</artifactId>
-                <version>${activation.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.mail</groupId>
-                <artifactId>mail</artifactId>
-                <version>${mail.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-javamail_1.4_spec</artifactId>
-                <version>${geronimo-servlet_3.0_spec.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>

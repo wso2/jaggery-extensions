@@ -38,28 +38,4 @@
         <module>feature</module>
     </modules>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jaggeryjs.modules.uuid</groupId>
-                <artifactId>org.jaggeryjs.modules.uuid</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jaggeryjs</groupId>
-                <artifactId>org.jaggeryjs.scriptengine</artifactId>
-                <version>${project.jaggery.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>${commons.logging.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>rhino.wso2</groupId>
-                <artifactId>js</artifactId>
-                <version>${rhino.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>

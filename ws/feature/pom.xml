@@ -35,6 +35,7 @@
         <dependency>
             <groupId>org.jaggeryjs.modules.ws</groupId>
             <artifactId>org.jaggeryjs.modules.ws</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ws.security.wso2</groupId>
