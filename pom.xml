@@ -57,6 +57,7 @@
     </modules>
 
     <properties>
+        <project.scm.id>github-scm</project.scm.id>
         <maven-src-plugin.version>1.7.2</maven-src-plugin.version>
         <maven-bunlde-plugin.version>2.3.5</maven-bunlde-plugin.version>
         <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
