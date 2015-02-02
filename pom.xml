@@ -93,8 +93,8 @@
         <axis2.osgi.version>1.6.1.wso2v11</axis2.osgi.version>
         <axiom.osgi.version>1.2.11.wso2v5</axiom.osgi.version>
         <xmlschema.osgi.version>1.4.7.wso2v1</xmlschema.osgi.version>
-        <rampart.osgi.version>1.6.1.wso2v13</rampart.osgi.version>
-        <wss4j.osgi.version>1.5.11.wso2v8</wss4j.osgi.version>
+        <rampart.osgi.version>1.6.1.wso2v14</rampart.osgi.version>
+        <wss4j.osgi.version>1.5.11.wso2v9</wss4j.osgi.version>
 
         <!-- jaggery modules -->
         <ws.module.version>1.2.0-SNAPSHOT</ws.module.version>
