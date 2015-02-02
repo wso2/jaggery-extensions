@@ -93,6 +93,14 @@
         <xmlschema.osgi.version>1.4.7.wso2v1</xmlschema.osgi.version>
         <rampart.osgi.version>1.6.1.wso2v13</rampart.osgi.version>
         <wss4j.osgi.version>1.5.11.wso2v8</wss4j.osgi.version>
+
+        <!-- jaggery modules -->
+        <ws.module.version>1.2.0-SNAPSHOT</ws.module.version>
+        <email.module.version>1.1.0-SNAPSHOT</email.module.version>
+        <process.module.version>1.1.0-SNAPSHOT</process.module.version>
+        <sso.module.version>1.0.0-SNAPSHOT</sso.module.version>
+        <uuid.module.version>1.1.0-SNAPSHOT</uuid.module.version>
+        <oauth.module.version>1.1.0-SNAPSHOT</oauth.module.version>
     </properties>
 
     <build>
@@ -188,7 +196,7 @@
             </releases>
         </repository>
     </repositories>
-    
+
     <pluginRepositories>
         <pluginRepository>
             <id>wso2.releases</id>
@@ -234,7 +242,7 @@
             <dependency>
                 <groupId>org.jaggeryjs.modules.email</groupId>
                 <artifactId>org.jaggeryjs.modules.email</artifactId>
-                <version>${project.version}</version>
+                <version>${email.module.version}</version>
             </dependency>
             <dependency>
                 <groupId>rhino.wso2</groupId>
@@ -269,7 +277,7 @@
             <dependency>
                 <groupId>org.jaggeryjs.modules.process</groupId>
                 <artifactId>org.jaggeryjs.modules.process</artifactId>
-                <version>${project.version}</version>
+                <version>${process.module.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jaggeryjs</groupId>
@@ -284,7 +292,7 @@
             <dependency>
                 <groupId>org.jaggeryjs.modules.sso</groupId>
                 <artifactId>org.jaggeryjs.modules.sso</artifactId>
-                <version>${project.version}</version>
+                <version>${sso.module.version}</version>
             </dependency>
             <dependency>
                 <groupId>opensaml.wso2</groupId>
@@ -304,12 +312,12 @@
             <dependency>
                 <groupId>org.jaggeryjs.modules.uuid</groupId>
                 <artifactId>org.jaggeryjs.modules.uuid</artifactId>
-                <version>${project.version}</version>
+                <version>${uuid.module.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jaggeryjs.modules.oauth</groupId>
                 <artifactId>org.jaggeryjs.modules.oauth</artifactId>
-                <version>${project.version}</version>
+                <version>${oauth.module.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.scribe</groupId>
@@ -325,6 +333,11 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jaggeryjs.modules.ws</groupId>
+                <artifactId>org.jaggeryjs.modules.ws</artifactId>
+                <version>${ws.module.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
