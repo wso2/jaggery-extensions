@@ -20,9 +20,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.wso2</groupId>
-        <artifactId>wso2</artifactId>
-        <version>1</version>
+        <groupId>org.jaggeryjs</groupId>
+        <artifactId>jaggery-parent</artifactId>
+        <version>0.9.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.jaggeryjs.modules</groupId>
@@ -75,6 +76,24 @@
 
         <rhino.version>1.7.0.R4.wso2v1</rhino.version>
         <rhino.imp.pkg.version>1.7.0.R4.wso2v1</rhino.imp.pkg.version>
+
+        <mail.version>1.4</mail.version>
+        <activation.version>1.1</activation.version>
+        <geronimo-servlet_3.0_spec.version>1.0</geronimo-servlet_3.0_spec.version>
+
+        <json.version>20090211</json.version>
+        <junit.version>3.8.2</junit.version>
+        <scribe.version>1.3.1</scribe.version>
+
+        <opensaml2.wso2.version>2.4.1.wso2v1</opensaml2.wso2.version>
+        <commons-codec.osgi.version>1.4.0.wso2v1</commons-codec.osgi.version>
+        <sso.hostobjects.version>1.0.1</sso.hostobjects.version>
+
+        <axis2.osgi.version>1.6.1.wso2v11</axis2.osgi.version>
+        <axiom.osgi.version>1.2.11.wso2v5</axiom.osgi.version>
+        <xmlschema.osgi.version>1.4.7.wso2v1</xmlschema.osgi.version>
+        <rampart.osgi.version>1.6.1.wso2v13</rampart.osgi.version>
+        <wss4j.osgi.version>1.5.11.wso2v8</wss4j.osgi.version>
     </properties>
 
     <build>
@@ -142,6 +161,101 @@
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ssh</artifactId>
                 <version>${maven-wagon-ssh.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jaggeryjs.modules.email</groupId>
+                <artifactId>org.jaggeryjs.modules.email</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>rhino.wso2</groupId>
+                <artifactId>js</artifactId>
+                <version>${rhino.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.utils</artifactId>
+                <version>${carbon.kernel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jaggeryjs</groupId>
+                <artifactId>org.jaggeryjs.hostobjects.file</artifactId>
+                <version>${project.jaggery.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+                <version>${activation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.mail</groupId>
+                <artifactId>mail</artifactId>
+                <version>${mail.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-javamail_1.4_spec</artifactId>
+                <version>${geronimo-servlet_3.0_spec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jaggeryjs.modules.process</groupId>
+                <artifactId>org.jaggeryjs.modules.process</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jaggeryjs</groupId>
+                <artifactId>org.jaggeryjs.scriptengine</artifactId>
+                <version>${project.jaggery.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons.logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jaggeryjs.modules.sso</groupId>
+                <artifactId>org.jaggeryjs.modules.sso</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>opensaml.wso2</groupId>
+                <artifactId>opensaml2</artifactId>
+                <version>${opensaml2.wso2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec.wso2</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons-codec.osgi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.core</artifactId>
+                <version>${carbon.kernel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jaggeryjs.modules.uuid</groupId>
+                <artifactId>org.jaggeryjs.modules.uuid</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jaggeryjs.modules.oauth</groupId>
+                <artifactId>org.jaggeryjs.modules.oauth</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scribe</groupId>
+                <artifactId>scribe</artifactId>
+                <version>${scribe.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${json.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
