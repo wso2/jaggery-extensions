@@ -35,9 +35,9 @@
     <description>Jaggery Modules</description>
 
     <scm>
-        <url>https://github.com/wso2/jaggery-modules.git</url>
-        <developerConnection>scm:git:https://github.com/wso2/jaggery-modules.git</developerConnection>
-        <connection>scm:git:https://github.com/wso2/jaggery-modules.git</connection>
+        <url>https://github.com/wso2/jaggery-extensions.git</url>
+        <developerConnection>scm:git:https://github.com/wso2/jaggery-extensions.git</developerConnection>
+        <connection>scm:git:https://github.com/wso2/jaggery-extensions.git</connection>
         <tag>HEAD</tag>
     </scm>
 
