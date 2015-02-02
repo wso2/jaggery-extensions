@@ -1,4 +1,18 @@
+# Ignore everything in this directory
+target
+.classpath
+.settings
+.project
+*.iml
+*.iws
+*.ipr
+.idea
+
 *.class
+# Mac crap
+.DS_Store
+
+target
 
 # Package Files #
 *.jar
