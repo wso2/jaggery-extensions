@@ -73,6 +73,8 @@
         <jaggery.version>0.9.0</jaggery.version>
         <jaggery.imp.pkg.version>[0.9.0, 1.0.0)</jaggery.imp.pkg.version>
 
+        <carbon.commons.version>4.3.2</carbon.commons.version>
+
         <rhino.version>1.7.0.R4.wso2v1</rhino.version>
         <rhino.imp.pkg.version>1.7.0.R4.wso2v1</rhino.imp.pkg.version>
 
@@ -338,6 +340,11 @@
                 <groupId>org.jaggeryjs.modules.ws</groupId>
                 <artifactId>org.jaggeryjs.modules.ws</artifactId>
                 <version>${ws.module.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.commons</groupId>
+                <artifactId>org.wso2.carbon.hostobjects.sso</artifactId>
+                <version>${carbon.commons.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

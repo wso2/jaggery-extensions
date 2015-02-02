@@ -36,6 +36,10 @@
             <groupId>org.jaggeryjs.modules.sso</groupId>
             <artifactId>org.jaggeryjs.modules.sso</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.commons</groupId>
+            <artifactId>org.wso2.carbon.hostobjects.sso</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -94,6 +98,10 @@
                             <bundles>
                                 <bundleDef>org.jaggeryjs.modules.sso:org.jaggeryjs.modules.sso</bundleDef>
                             </bundles>
+                            <importBundles>
+                                <importBundleDef>org.wso2.carbon.commons:org.wso2.carbon.hostobjects.sso
+                                </importBundleDef>
+                            </importBundles>
                         </configuration>
                     </execution>
                 </executions>
