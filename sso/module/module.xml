@@ -3,8 +3,4 @@
         <name>client</name>
         <path>scripts/sso.client.js</path>
     </script>
-    <hostObject>
-        <className>org.wso2.carbon.hostobjects.sso.SAMLSSORelyingPartyObject</className>
-        <name>SSORelyingParty</name>
-    </hostObject>
 </module>

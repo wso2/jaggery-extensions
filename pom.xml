@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.jaggeryjs</groupId>
         <artifactId>jaggery-parent</artifactId>
-        <version>0.9.0.ALPHA6</version>
+        <version>0.9.0</version>
     </parent>
 
     <groupId>org.jaggeryjs.modules</groupId>
@@ -70,8 +70,8 @@
         <carbon.kernel.version>4.3.0</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.3.0, 4.4.0)</carbon.kernel.imp.pkg.version>
 
-        <jaggery.version>0.9.0.ALPHA6</jaggery.version>
-        <jaggery.imp.pkg.version>[0.9.0.ALPHA6, 1.0.0)</jaggery.imp.pkg.version>
+        <jaggery.version>0.9.0</jaggery.version>
+        <jaggery.imp.pkg.version>[0.9.0, 1.0.0)</jaggery.imp.pkg.version>
 
         <rhino.version>1.7.0.R4.wso2v1</rhino.version>
         <rhino.imp.pkg.version>1.7.0.R4.wso2v1</rhino.imp.pkg.version>
