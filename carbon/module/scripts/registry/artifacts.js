@@ -315,7 +315,7 @@
         //Go through each check list item
         for (var index in checkListItems) {
             //Get whether the check list item is checked
-            var state = artifact.isLCItemChecked(index);
+            var state = artifact.isLCItemChecked(index,lifecycleName);
             checkListItemArray.push({ 'name': checkListItems[index], 'checked': state });
         }
 
@@ -356,7 +356,7 @@
 
         var artifact = getArtifactFromImage(this.manager, options);
 	    var lifecycleName = getLifecycleName(artifact);
-        var checkListItems = artifact.getAllCheckListItemNames();
+        var checkListItems = artifact.getAllCheckListItemNames(lifecycleName);
 
         var checkListLength = checkListItems.length;
 
