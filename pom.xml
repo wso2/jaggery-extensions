@@ -41,8 +41,8 @@
 
     <modules>
         <module>carbon</module>
-        <!--<module>markdown</module>-->
-        <!--<module>handlebars</module>-->
+        <module>markdown</module>
+        <module>handlebars</module>
         <module>email</module>
         <module>i18n</module>
         <module>oauth</module>
