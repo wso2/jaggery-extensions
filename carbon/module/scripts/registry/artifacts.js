@@ -322,6 +322,20 @@
         return checkListItemArray;
     };
 
+    /**
+     * Returns a list of all lifecycles that have been attached to the provided asset.
+     * @param  {Number} assetId UUID
+     * @return {Array}         An array containing all attached lifecycles
+     */
+    ArtifactManager.prototype.listAllAttachedLifecycles = function(id){
+        var artifact = this.manager.getGenericArtifact(id);
+        var lcs = [];
+        if(!artifact){
+            log.error('Artifact id '+assetId+' was not located');
+            return lcs;
+        }
+        return artifact.getLifecycleNames();
+    };
     /*
      The function checks whether a given check list item at the provided index is checked for the current state
      @index: The index of the check list item.This must be a value between 0 and the maximum check list item
