@@ -331,10 +331,16 @@
         var artifact = this.manager.getGenericArtifact(id);
         var lcs = [];
         if(!artifact){
-            log.error('Artifact id '+assetId+' was not located');
+            log.error('Asset with id '+assetId+' was not located thus the available lifecycles could not be returned.'
+                +'Please make sure that a valid id is provided and the asset manager is of the same type as the asset.');
             return lcs;
         }
-        return artifact.getLifecycleNames();
+        var availableLifecycles = artifact.getLifecycleNames(); 
+        //The returned object is a Java String array so must be converted
+        for(var index = 0 ; index< availableLifecycles.length; index++){
+            lcs.push(String(availableLifecycles[index]));
+        }
+        return lcs;
     };
     /*
      The function checks whether a given check list item at the provided index is checked for the current state
