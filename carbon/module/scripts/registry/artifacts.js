@@ -397,7 +397,7 @@
 
         var artifact = getArtifactFromImage(this.manager, options);
 	    var lifecycleName = getLifecycleName(artifact);
-        var checkListItems = artifact.getAllCheckListItemNames();
+        var checkListItems = artifact.getAllCheckListItemNames(lifecycleName);
 
         var checkListLength = checkListItems.length;
 
