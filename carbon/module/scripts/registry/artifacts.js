@@ -328,6 +328,10 @@
         log.info('### getCheckListItemNames ###');
         var artifact = getArtifactFromImage(this.manager, options);
 	    var lifecycleName = resolveLCName(arguments,artifact,1);//getLifecycleName(artifact);
+        for(var i in arguments){
+            log.info(arguments[i]);
+        }
+        log.info('### done ###');
         var checkListItems = artifact.getAllCheckListItemNames(lifecycleName) || [];
 
         var checkListItemArray = [];
