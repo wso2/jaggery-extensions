@@ -110,10 +110,8 @@
     var resolveLCName = function(args,artifact,index){
         if((args.length -1) < index){
             var lc =getLifecycleName(artifact);
-            log.info('lc retrieved from artifact :: '+lc);
             return lc;
         }
-        log.info('lc retrieved from explicit lifecycle parameter ::'+args[index]);
         return args[index];
     };
     var ArtifactManager = function (registry, type) {
@@ -294,7 +292,6 @@
      @options: An artifact image (Not a real artifact)
      */
     ArtifactManager.prototype.promoteLifecycleState = function (state, options) {
-        log.info('### promoteLifecycleState ###');
         var checkListItems,
             artifact = getArtifactFromImage(this.manager, options);
         if (!artifact) {
@@ -310,7 +307,6 @@
      @returns: The life cycle state
      */
     ArtifactManager.prototype.getLifecycleState = function (options) {
-        log.info('### getLifecycleState ###');
         var artifact = getArtifactFromImage(this.manager, options);
         var lifecycleName = resolveLCName(arguments,artifact,1);
         if (!artifact) {
@@ -325,13 +321,8 @@
      @returns: A String array containing the check list items.(Can be empty if no check list items are present)
      */
     ArtifactManager.prototype.getCheckListItemNames = function (options) {
-        log.info('### getCheckListItemNames ###');
         var artifact = getArtifactFromImage(this.manager, options);
 	    var lifecycleName = resolveLCName(arguments,artifact,1);//getLifecycleName(artifact);
-        for(var i in arguments){
-            log.info(arguments[i]);
-        }
-        log.info('### done ###');
         var checkListItems = artifact.getAllCheckListItemNames(lifecycleName) || [];
 
         var checkListItemArray = [];
@@ -374,7 +365,6 @@
      @throws Exception: If the index is not within 0 and the max check list item or if there is an issue ticking the item
      */
     ArtifactManager.prototype.isItemChecked = function (index, options) {
-        log.info('### isItemChecked ###');
         var artifact = getArtifactFromImage(this.manager, options);
 	    var lifecycleName = resolveLCName(arguments,artifact,2);//getLifecycleName(artifact);
         var checkListItems = artifact.getAllCheckListItemNames();
@@ -397,7 +387,6 @@
      @throws Exception: If the index is not within 0 and max check list item or if there is an issue ticking the item.
      */
     ArtifactManager.prototype.checkItem = function (index, options) {
-        log.info('### checkItem ###');
         var artifact = getArtifactFromImage(this.manager, options);
 	    var lifecycleName = resolveLCName(arguments,artifact,2);//getLifecycleName(artifact);
         var checkListItems = artifact.getAllCheckListItemNames(lifecycleName);
@@ -418,7 +407,6 @@
      @throws Exception: If the index is not within 0 and max check list item or if there is an issue ticking the item
      */
     ArtifactManager.prototype.uncheckItem = function (index, options) {
-        log.info('### uncheckItem ###');
         var artifact = getArtifactFromImage(this.manager, options);
 	    var lifecycleName = resolveLCName(arguments,artifact,2);//getLifecycleName(artifact);
         var checkListItems = artifact.getAllCheckListItemNames(lifecycleName);
@@ -437,7 +425,6 @@
      @returns: The list of available actions for the current state,else false
      */
     ArtifactManager.prototype.availableActions = function (options) {
-        log.info('### availableActions ###');
         var artifact = getArtifactFromImage(this.manager, options);
         if (!artifact) {
             throw new Error('Specified artifact cannot be found : ' + JSON.stringify(options));
