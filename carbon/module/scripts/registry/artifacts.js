@@ -193,6 +193,54 @@
         return artifactz;
     };
 
+    ArtifactManager.prototype.strictSearch = function(query,paging){
+        var list, map, key, artifacts, pagination, value, that,
+            artifactz = [];
+        pagination = generatePaginationForm(paging);
+        try {
+            PaginationContext.init(pagination.start, pagination.count, pagination.sortOrder,
+                pagination.sortBy, pagination.paginationLimit);
+            map = HashMap();
+            //case senstive search as it using greg with solr 1.4.1
+            if (!query) {
+                //listing for sorting
+                map = java.util.Collections.emptyMap();
+            } else if (query instanceof String || typeof query === 'string') {
+                list = new ArrayList();
+                list.add(query);
+                map.put('overview_name', list);
+            } else {
+                //support for only on name of attribut -
+                for (key in query) {
+                    // if attribute is string values
+                    if (query.hasOwnProperty(key)) {
+                        value = query[key];
+                        list = new ArrayList();
+                        if (value instanceof Array) {
+                            value.forEach(function (val) {
+                                //solr config update need have '*' as first char in below line
+                                //check life_cycle state
+                                list.add(key == 'lcState' ? val : '' + val );
+                            });
+                        } else {
+                            //solr config update need have '*' as first char in below line
+                            list.add(key == 'lcState' ? value : '' + value );
+                        }
+                        map.put(key, list);
+                    }
+                }//end of attribut looping (all attributes)
+            }
+            artifacts = this.manager.findGenericArtifacts(map);
+            that = this;
+            artifacts.forEach(function (artifact) {
+                artifactz.push(buildArtifact(that, artifact));
+            });
+        } finally {
+            PaginationContext.destroy();
+        }
+        return artifactz;
+    }
+
     ArtifactManager.prototype.get = function (id) {
         return buildArtifact(this, this.manager.getGenericArtifact(id))
     };
