@@ -19,15 +19,26 @@
 
     <parent>
         <groupId>org.jaggeryjs.modules</groupId>
-        <artifactId>i18n-parent</artifactId>
+        <artifactId>sso-parent</artifactId>
         <version>1.2.3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>i18n.feature</artifactId>
+    <artifactId>sso.feature</artifactId>
     <packaging>pom</packaging>
-    <name>i18n Module - Feature</name>
+    <name>sso Module - Feature</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jaggeryjs.modules.sso</groupId>
+            <artifactId>org.jaggeryjs.modules.sso</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.commons</groupId>
+            <artifactId>org.wso2.carbon.hostobjects.sso</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -80,8 +91,15 @@
                             <goal>p2-feature-gen</goal>
                         </goals>
                         <configuration>
-                            <id>org.jaggeryjs.modules.i18n</id>
+                            <id>org.jaggeryjs.modules.sso</id>
                             <propertiesFile>etc/feature.properties</propertiesFile>
+                            <bundles>
+                                <bundleDef>org.jaggeryjs.modules.sso:org.jaggeryjs.modules.sso</bundleDef>
+                            </bundles>
+                            <importBundles>
+                                <importBundleDef>org.wso2.carbon.commons:org.wso2.carbon.hostobjects.sso
+                                </importBundleDef>
+                            </importBundles>
                         </configuration>
                     </execution>
                 </executions>
