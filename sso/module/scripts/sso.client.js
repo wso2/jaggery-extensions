@@ -44,13 +44,17 @@ var client = {};
      * validating the signature of the response saml object
      */
     client.validateSignature = function (samlObj, config) {
-        var tDomain = Util.getDomainName(samlObj);
-        var tId = carbon.server.tenantId({domain: tDomain});
-
+        var tDomain, tId;
+        if(config.USE_ST_KEY){
+            tDomain = carbon.server.superTenant.domain;
+            tId = carbon.server.superTenant.tenantId;
+        }else{
+            tDomain = Util.getDomainName(samlObj);
+            tId = carbon.server.tenantId({domain: tDomain});
+        }
         return Util.validateSignature(samlObj,
             config.KEY_STORE_NAME, config.KEY_STORE_PASSWORD, config.IDP_ALIAS, tId, tDomain);
     };
-
     /**
      * Checking if the request is a logout call
      */
