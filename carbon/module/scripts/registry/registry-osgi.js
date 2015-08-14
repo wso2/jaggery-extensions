@@ -405,6 +405,9 @@ var registry = registry || {};
         this.registry.rateResource(path, rating);
     };
 
+    Registry.prototype.invokeAspect = function (path,aspectName,action,parameters) { 
+	this.registry.invokeAspect(path,aspectName,action,parameters);
+    }
     Registry.prototype.unrate = function (path) {
         this.registry.rateResource(path, 0);
     };
