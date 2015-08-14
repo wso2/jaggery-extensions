@@ -76,6 +76,9 @@
             realmService = server.osgiService('org.wso2.carbon.user.core.service.RealmService');
         user = carbon.server.tenantUser(username);
         realm = realmService.getTenantUserRealm(user.tenantId);
+	if(!realm){
+		return null;
+	}
         return realm.getUserStoreManager().authenticate(user.username, password);
     };
 
