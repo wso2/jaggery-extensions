@@ -401,15 +401,11 @@ public class WSRequestHostObject extends ScriptableObject {
                 wsRequest.error.jsSet_code(faultCode.toString());
             }
             wsRequest.error.jsSet_reason(e.getReason());
-            String message = "Error occured while invoking the service";
-            log.error(message, e);
-            throw new ScriptException(message, e);
+            throw new ScriptException(e.getMessage(), e);
         } catch (Exception e) {
             wsRequest.error = new WebServiceErrorHostObject();
             wsRequest.error.jsSet_detail(e.getMessage());
-            String message = "Error occured while invoking the service";
-            log.error(message, e);
-            throw new ScriptException(message, e);
+            throw new ScriptException(e.getMessage(), e);
         } finally {
             wsRequest.sender.cleanupTransport();
         }
