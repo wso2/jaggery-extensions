@@ -77,7 +77,7 @@
         user = carbon.server.tenantUser(username);
         realm = realmService.getTenantUserRealm(user.tenantId);
 	if(!realm){
-		return null;
+		throw new Error('Could not find a domain for the username : ' + username);
 	}
         return realm.getUserStoreManager().authenticate(user.username, password);
     };
