@@ -347,8 +347,7 @@
         }
         //checkListItems = artifact.getAllCheckListItemNames();
 	    var lifecycleName = resolveLCName(arguments,artifact,2);//getLifecycleName(artifact);
-	    this.registry.invokeAspect(options.path,lifecycleName,state,{});
-          //artifact.invokeAction(state,lifecycleName);
+        artifact.invokeAction(state,lifecycleName);
     };
     /*
      Gets the current lifecycle state
