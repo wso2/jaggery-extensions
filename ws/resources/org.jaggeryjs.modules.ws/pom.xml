@@ -1,15 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.jaggeryjs.modules</groupId>
         <artifactId>ws-parent</artifactId>
-        <version>1.1.0</version>
+        <version>1.3.3-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jaggeryjs.modules.ws</groupId>
     <artifactId>org.jaggeryjs.modules.ws</artifactId>
     <packaging>bundle</packaging>
     <name>WSRequest HostObject</name>
@@ -19,62 +18,50 @@
         <dependency>
             <groupId>org.jaggeryjs</groupId>
             <artifactId>org.jaggeryjs.scriptengine</artifactId>
-            <version>${jaggery.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.utils</artifactId>
-            <version>${carbon.kernal.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.axis2.wso2</groupId>
             <artifactId>axis2-json</artifactId>
-            <version>${axis2.osgi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.axis2.wso2</groupId>
             <artifactId>axis2</artifactId>
-            <version>${axis2.osgi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ws.commons.axiom.wso2</groupId>
             <artifactId>axiom</artifactId>
-            <version>${axiom.osgi.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>${commons-logging.version}</version>
         </dependency>
         <dependency>
             <groupId>rhino.wso2</groupId>
             <artifactId>js</artifactId>
-            <version>${rhino.osgi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.rampart.wso2</groupId>
             <artifactId>rampart-policy</artifactId>
-            <version>${rampart.osgi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.rampart.wso2</groupId>
             <artifactId>rampart-trust</artifactId>
-            <version>${rampart.osgi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.rampart.wso2</groupId>
             <artifactId>rampart-core</artifactId>
-            <version>${rampart.osgi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ws.security.wso2</groupId>
             <artifactId>wss4j</artifactId>
-            <version>${wss4j.osgi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.addressing</artifactId>
-            <version>${carbon.kernal.version}</version>
         </dependency>
     </dependencies>
 
@@ -105,16 +92,5 @@
         </plugins>
     </build>
 
-    <properties>
-        <jaggery.version>0.9.0.ALPHA4.wso2v4</jaggery.version>
-        <carbon.kernal.version>4.2.0</carbon.kernal.version>
-        <rhino.osgi.version>1.7.0.R4.wso2v1</rhino.osgi.version>
-        <axis2.osgi.version>1.6.1.wso2v10</axis2.osgi.version>
-        <axiom.osgi.version>1.2.11.wso2v4</axiom.osgi.version>
-        <xmlschema.osgi.version>1.4.7.wso2v1</xmlschema.osgi.version>
-        <rampart.osgi.version>1.6.1.wso2v10</rampart.osgi.version>
-        <commons-logging.version>1.1.1</commons-logging.version>
-        <wss4j.osgi.version>1.5.11.wso2v3</wss4j.osgi.version>
-    </properties>
 </project>
 
