@@ -20,12 +20,12 @@
     <parent>
         <groupId>org.jaggeryjs.modules</groupId>
         <artifactId>jaggery-modules</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>uuid-parent</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <name>uuid Module</name>
