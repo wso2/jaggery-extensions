@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.jaggeryjs</groupId>
         <artifactId>jaggery-parent</artifactId>
-        <version>0.10.0</version>
+        <version>0.12.0-M1</version>
     </parent>
 
     <groupId>org.jaggeryjs.modules</groupId>
@@ -69,7 +69,7 @@
         <carbon.kernel.version>4.4.0</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.4.0, 4.5.0)</carbon.kernel.imp.pkg.version>
 
-        <jaggery.version>0.11.0</jaggery.version>
+        <jaggery.version>0.12.0-M1</jaggery.version>
         <jaggery.imp.pkg.version>[0.10.0, 1.0.0)</jaggery.imp.pkg.version>
 
         <carbon.commons.version>4.3.2</carbon.commons.version>
