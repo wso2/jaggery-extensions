@@ -1,6 +1,8 @@
 package org.jaggeryjs.modules.oauth;
 
 import com.google.gson.Gson;
+import org.jaggeryjs.modules.oauth.bean.AccessTokenResponseConfig;
+import org.jaggeryjs.modules.oauth.bean.AccessTokenResponse;
 import org.mozilla.javascript.*;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.*;
@@ -9,6 +11,10 @@ import org.scribe.oauth.OAuthService;
 import org.jaggeryjs.scriptengine.exceptions.ScriptException;
 import org.jaggeryjs.scriptengine.util.HostObjectUtil;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import org.opensaml.xml.util.Base64;
 import java.util.Arrays;
 
 public class OAuthHostObject extends ScriptableObject {
@@ -25,6 +31,9 @@ public class OAuthHostObject extends ScriptableObject {
     private Verifier verifier;
     private Response response;
     private OAuthVersion oAuthVersion;
+    private AccessTokenResponse accessTokenResponse;
+    private String tokenEndpoint;
+    private static final Gson gson = new Gson();
     
     enum OAuthVersion {
     	OAUTH1, OAUTH2
@@ -55,7 +64,6 @@ public class OAuthHostObject extends ScriptableObject {
             if (!(args[0] == Context.getUndefinedValue()) && args[0] instanceof NativeObject) {
                 NativeObject config = (NativeObject) args[0];
 
-                Gson gson = new Gson();
                 ProviderConfig providerConfig = gson.fromJson(HostObjectUtil.serializeJSON(config), ProviderConfig.class);
 
                 if (providerConfig.getApi_key() == null
@@ -68,6 +76,7 @@ public class OAuthHostObject extends ScriptableObject {
 
                 oauthho.apiKey = providerConfig.getApi_key();
                 oauthho.apiSecret = providerConfig.getApi_secret();
+                oauthho.tokenEndpoint = providerConfig.getAccess_token_url();
 
                 if (providerConfig.getOAuth_version() == 1.0) {
                 	
@@ -89,13 +98,14 @@ public class OAuthHostObject extends ScriptableObject {
                 } else if (providerConfig.getOAuth_version() == 2.0) {
                 	
                     if (providerConfig.getCallback_url() == null) {
-                        throw new ScriptException("API configuration not specified");
+                        throw new ScriptException("API configuration not specified. Need to provide callback_url.");
                     }
                     
                 	oauthho.oAuthVersion = OAuthVersion.OAUTH2;
                     GenericOAuth20Api oauth20Api = new GenericOAuth20Api();
                     oauth20Api.setAccessTokenEP(providerConfig.getAccess_token_url());
                     oauth20Api.setAuthorizeUrl(providerConfig.getAuthorization_url());
+                    oauth20Api.setCallBackUrl(providerConfig.getCallback_url());
                     oauthho.oauthService = new ServiceBuilder()
                             .provider(oauth20Api)
                             .apiKey(oauthho.apiKey)
@@ -118,7 +128,7 @@ public class OAuthHostObject extends ScriptableObject {
     	if (oauthho.oAuthVersion == OAuthVersion.OAUTH1) {
     		oauthho.requestToken = oauthho.oauthService.getRequestToken();
     		return oauthho.oauthService.getAuthorizationUrl(oauthho.requestToken);
-    	}else if(oauthho.oAuthVersion == OAuthVersion.OAUTH2) {
+    	} else if(oauthho.oAuthVersion == OAuthVersion.OAUTH2) {
     		return oauthho.oauthService.getAuthorizationUrl(EMPTY_TOKEN);
     	}
     	
@@ -192,6 +202,40 @@ public class OAuthHostObject extends ScriptableObject {
             return oauthho.oauthService.getAccessToken(oauthho.requestToken, oauthho.verifier);
         } else {
             throw new ScriptException("Illegal argument for the verifier : Add the code given from Provider");
+        }
+    }
+
+    /**
+     * Send the SAMLResponse and creates AccessTokenResponse
+     * lik.getTokenResponse(samlResponse);
+     */
+    public static AccessTokenResponse jsFunction_getTokenResponse(Context cx, Scriptable thisObj, Object[] args, Function funObj)
+            throws ScriptException {
+        OAuthHostObject oauthHostObject = (OAuthHostObject) thisObj;
+        if ((args.length == 1) && args[0] instanceof String) {
+            try {
+                String SAMLResponse = (String) args[0];
+                String keySecret = oauthHostObject.apiKey + ":" + oauthHostObject.apiSecret;
+
+                // Decode SAML response, extract SAML assertion string and encode SAML assertion string
+                String encodedSAMLAssertion = Base64.encodeBytes(SAML2GrantManager.getSamlAssertionString(
+                        new String(Base64.decode(SAMLResponse))).getBytes());
+
+                String queryParam = "grant_type=" + SSOAgentConstants.OAuth2.SAML2_BEARER_GRANT_TYPE +
+                        "&assertion=" + URLEncoder.encode(encodedSAMLAssertion, "UTF-8");
+
+                String accessTokenResponse = SAML2GrantManager.executePost(oauthHostObject.tokenEndpoint, queryParam,
+                        Base64.encodeBytes(keySecret.getBytes(Charset.forName("UTF-8"))).replace("\n", ""));
+
+                oauthHostObject.accessTokenResponse = new AccessTokenResponse(gson.fromJson(accessTokenResponse,
+                        AccessTokenResponseConfig.class));
+
+                return oauthHostObject.accessTokenResponse;
+            } catch (UnsupportedEncodingException ex) {
+                throw new ScriptException("Encoding is not valid", ex);
+            }
+        } else {
+            throw new ScriptException("SAML response should be provided. Request cannot be built.");
         }
     }
 
