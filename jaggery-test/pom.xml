@@ -20,12 +20,12 @@
     <parent>
         <groupId>org.jaggeryjs.modules</groupId>
         <artifactId>jaggery-modules</artifactId>
-        <version>1.4.2-SNAPSHOT</version>
+        <version>1.4.3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>jaggery-test-parent</artifactId>
-    <version>1.4.2-SNAPSHOT</version>
+    <version>1.4.3-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <name>jaggery-test Module</name>
