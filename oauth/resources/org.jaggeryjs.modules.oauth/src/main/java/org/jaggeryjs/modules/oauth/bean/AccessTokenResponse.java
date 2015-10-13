@@ -21,45 +21,52 @@
 package org.jaggeryjs.modules.oauth.bean;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 
 public class AccessTokenResponse {
 
-    private AccessTokenResponseConfig accessTokenResponseConfig;
+    @SerializedName("access_token")
+    private String accessToken;
 
-    public AccessTokenResponse(AccessTokenResponseConfig atrc){
-        this.accessTokenResponseConfig = atrc;
+    @SerializedName("refresh_token")
+    private String refreshToken;
+
+    @SerializedName("token_type")
+    private String tokenType;
+
+    @SerializedName("expires_in")
+    private String expiresIn;
+
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public String getAccessToken(){
-        return accessTokenResponseConfig.getAccess_token();
-    }
-
-    public void setAccessToken(String accessToken){
-        accessTokenResponseConfig.setAccess_token(accessToken);
-    }
-
-    public String getRefreshToken(){
-        return accessTokenResponseConfig.getRefresh_token();
-    }
-
-    public void setRefreshToken(String refreshToken){
-        accessTokenResponseConfig.setRefresh_token(refreshToken);
+    public String getRefreshToken() {
+        return refreshToken;
     }
 
     public String getTokenType() {
-        return accessTokenResponseConfig.getToken_type();
-    }
-
-    public void setTokenType(String tokenType) {
-        accessTokenResponseConfig.setToken_type(tokenType);
+        return tokenType;
     }
 
     public String getExpiresIn() {
-        return accessTokenResponseConfig.getExpires_in();
+        return expiresIn;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
     }
 
     public void setExpiresIn(String expiresIn) {
-        accessTokenResponseConfig.setExpires_in(expiresIn);
+        this.expiresIn = expiresIn;
     }
 
     @Override

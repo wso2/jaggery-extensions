@@ -1,7 +1,6 @@
 package org.jaggeryjs.modules.oauth;
 
 import com.google.gson.Gson;
-import org.jaggeryjs.modules.oauth.bean.AccessTokenResponseConfig;
 import org.jaggeryjs.modules.oauth.bean.AccessTokenResponse;
 import org.mozilla.javascript.*;
 import org.scribe.builder.ServiceBuilder;
@@ -34,9 +33,9 @@ public class OAuthHostObject extends ScriptableObject {
     private AccessTokenResponse accessTokenResponse;
     private String tokenEndpoint;
     private static final Gson gson = new Gson();
-    
+
     enum OAuthVersion {
-    	OAUTH1, OAUTH2
+        OAUTH1, OAUTH2
     }
 
 
@@ -79,12 +78,12 @@ public class OAuthHostObject extends ScriptableObject {
                 oauthho.tokenEndpoint = providerConfig.getAccess_token_url();
 
                 if (providerConfig.getOAuth_version() == 1.0) {
-                	
+
                     if (providerConfig.getRequest_token_url() == null) {
                         throw new ScriptException("API configuration not specified");
                     }
-                    
-                	oauthho.oAuthVersion = OAuthVersion.OAUTH1;
+
+                    oauthho.oAuthVersion = OAuthVersion.OAUTH1;
                     GenericOAuth10aApi oauth10aApi = new GenericOAuth10aApi();
                     oauth10aApi.setAccessTokenEndpoint(providerConfig.getAccess_token_url());
                     oauth10aApi.setAuthorizationUrl(providerConfig.getAuthorization_url());
@@ -96,12 +95,12 @@ public class OAuthHostObject extends ScriptableObject {
                             .build();
 
                 } else if (providerConfig.getOAuth_version() == 2.0) {
-                	
+
                     if (providerConfig.getCallback_url() == null) {
                         throw new ScriptException("API configuration not specified. Need to provide callback_url.");
                     }
-                    
-                	oauthho.oAuthVersion = OAuthVersion.OAUTH2;
+
+                    oauthho.oAuthVersion = OAuthVersion.OAUTH2;
                     GenericOAuth20Api oauth20Api = new GenericOAuth20Api();
                     oauth20Api.setAccessTokenEP(providerConfig.getAccess_token_url());
                     oauth20Api.setAuthorizeUrl(providerConfig.getAuthorization_url());
@@ -124,15 +123,15 @@ public class OAuthHostObject extends ScriptableObject {
      * creates an authorization Token
      */
     public static String jsFunction_getAuthorizationUrl(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws ScriptException {
-    	OAuthHostObject oauthho = (OAuthHostObject) thisObj;
-    	if (oauthho.oAuthVersion == OAuthVersion.OAUTH1) {
-    		oauthho.requestToken = oauthho.oauthService.getRequestToken();
-    		return oauthho.oauthService.getAuthorizationUrl(oauthho.requestToken);
-    	} else if(oauthho.oAuthVersion == OAuthVersion.OAUTH2) {
-    		return oauthho.oauthService.getAuthorizationUrl(EMPTY_TOKEN);
-    	}
-    	
-    	return null;
+        OAuthHostObject oauthho = (OAuthHostObject) thisObj;
+        if (oauthho.oAuthVersion == OAuthVersion.OAUTH1) {
+            oauthho.requestToken = oauthho.oauthService.getRequestToken();
+            return oauthho.oauthService.getAuthorizationUrl(oauthho.requestToken);
+        } else if(oauthho.oAuthVersion == OAuthVersion.OAUTH2) {
+            return oauthho.oauthService.getAuthorizationUrl(EMPTY_TOKEN);
+        }
+
+        return null;
     }
 
     /**
@@ -227,8 +226,7 @@ public class OAuthHostObject extends ScriptableObject {
                 String accessTokenResponse = SAML2GrantManager.executePost(oauthHostObject.tokenEndpoint, queryParam,
                         Base64.encodeBytes(keySecret.getBytes(Charset.forName("UTF-8"))).replace("\n", ""));
 
-                oauthHostObject.accessTokenResponse = new AccessTokenResponse(gson.fromJson(accessTokenResponse,
-                        AccessTokenResponseConfig.class));
+                oauthHostObject.accessTokenResponse = gson.fromJson(accessTokenResponse, AccessTokenResponse.class);
 
                 return oauthHostObject.accessTokenResponse;
             } catch (UnsupportedEncodingException ex) {
