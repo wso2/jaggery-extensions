@@ -31,6 +31,9 @@ import java.net.URL;
 
 public class SAML2GrantManager {
 
+    private static final String assertionStartMarker = "<saml2:Assertion";
+    private static final String assertionEndMarker = "</saml2:Assertion>";
+
     /**
      * Returns access token details that can be used to extract access token, refresh token, token type and expires in
      *
@@ -70,7 +73,7 @@ public class SAML2GrantManager {
         } catch (MalformedURLException ex) {
             throw new ScriptException("The target URL is not valid.", ex);
         } catch (ProtocolException ex) {
-            throw new ScriptException("The http method is not valid.", ex);
+            throw new ScriptException("The protocol is not valid.", ex);
         } catch (IOException ex) {
             throw new ScriptException("The request cannot be sent.", ex);
         } finally {
@@ -87,8 +90,6 @@ public class SAML2GrantManager {
      * @return assertion string
      */
     public static String getSamlAssertionString(String SAMLResponse) throws ScriptException {
-        String assertionStartMarker = "<saml2:Assertion";
-        String assertionEndMarker = "</saml2:Assertion>";
         int assertionStartIndex = SAMLResponse.indexOf(assertionStartMarker);
         int assertionEndIndex = SAMLResponse.indexOf(assertionEndMarker);
         if (assertionStartIndex != -1 && assertionEndIndex != -1) {
