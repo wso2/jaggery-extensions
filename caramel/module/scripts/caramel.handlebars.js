@@ -180,12 +180,36 @@ engine('handlebars', (function () {
         return translate(text) || text;
     });
 
+    function padWithLeadingZeros(string) {
+        return new Array(5 - string.length).join("0") + string;
+    }
+
+    function unicodeCharEscape(charCode) {
+        return "\\u" + padWithLeadingZeros(charCode.toString(16));
+    }
+
+    function unicodeEscape(string) {
+        return string.split("")
+            .map(function (ch) {
+                var code = ch.charCodeAt(0);
+                if(((code > 47 && code < 58) || // numeric (0-9)
+                    (code > 64 && code < 91) || // upper alpha (A-Z)
+                    (code > 96 && code < 123)||// lower alpha (a-z)
+                    (ch == '.') || (ch == ',') || (ch == '{') ||(ch == '}') ||(ch == '"') || (ch == ':') || (ch == ' ') )){
+                    return ch;
+                }else{
+                    return unicodeCharEscape(code);
+                }
+            })
+            .join("");
+    }
+
     /**
      * Registers  'json' handler for serializing objects.
      * {{json data}}
      */
     Handlebars.registerHelper('json', function (obj) {
-        return obj ? new Handlebars.SafeString(stringify(obj)) : null;
+        return obj ? new Handlebars.SafeString(unicodeEscape(stringify(obj))) : null;
     });
 
     /**
@@ -454,6 +478,8 @@ engine('handlebars', (function () {
             return require(caramel.theme().resolve(path));
         });
     };
+
+
 
     translate = function (text) {
         var language, dir, path,
