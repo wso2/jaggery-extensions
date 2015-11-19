@@ -105,11 +105,20 @@
     UserManager.prototype.removeRole = function (role) {
         this.manager.deleteRole(role);
     };
+    
+    UserManager.prototype.getAdminRoleName = function () {
+        return this.manager.getRealmConfiguration().getAdminRoleName();
+    };
 
+    UserManager.prototype.getAdminUserName = function () {
+        return this.manager.getRealmConfiguration().getAdminUserName();
+    };
+    
     UserManager.prototype.allRoles = function () {
         return this.manager.getRoleNames();
     };
-	UserManager.prototype.getUserListOfRole = function (role) {
+    
+    UserManager.prototype.getUserListOfRole = function (role) {
         return this.manager.getUserListOfRole(role);
     };
     /**

@@ -20,12 +20,12 @@
     <parent>
         <groupId>org.jaggeryjs</groupId>
         <artifactId>jaggery-parent</artifactId>
-        <version>0.10.0</version>
+        <version>0.12.0</version>
     </parent>
 
     <groupId>org.jaggeryjs.modules</groupId>
     <artifactId>jaggery-modules</artifactId>
-    <version>1.4.1-SNAPSHOT</version>
+    <version>1.5.1-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <name>Jaggery Modules</name>
@@ -66,10 +66,10 @@
         <commons.logging.version>1.1.1</commons.logging.version>
         <commons.logging.imp.pkg.version>1.1.1</commons.logging.imp.pkg.version>
 
-        <carbon.kernel.version>4.4.0</carbon.kernel.version>
-        <carbon.kernel.imp.pkg.version>[4.4.0, 4.5.0)</carbon.kernel.imp.pkg.version>
+        <carbon.kernel.version>4.4.1</carbon.kernel.version>
+        <carbon.kernel.imp.pkg.version>[4.4.0, 5.0.0)</carbon.kernel.imp.pkg.version>
 
-        <jaggery.version>0.10.0</jaggery.version>
+        <jaggery.version>0.12.0</jaggery.version>
         <jaggery.imp.pkg.version>[0.10.0, 1.0.0)</jaggery.imp.pkg.version>
 
         <carbon.commons.version>4.3.2</carbon.commons.version>
@@ -92,18 +92,18 @@
         <axis2.osgi.version>1.6.1.wso2v12</axis2.osgi.version>
         <axiom.osgi.version>1.2.11.wso2v6</axiom.osgi.version>
         <xmlschema.osgi.version>1.4.7.wso2v3</xmlschema.osgi.version>
-        <rampart.osgi.version>1.6.1.wso2v14</rampart.osgi.version>
-        <wss4j.osgi.version>1.5.11.wso2v9</wss4j.osgi.version>
+        <rampart.osgi.version>1.6.1.wso2v16</rampart.osgi.version>
+        <wss4j.osgi.version>1.5.11.wso2v11</wss4j.osgi.version>
 
         <!-- jaggery modules -->
-        <ws.module.version>1.4.1-SNAPSHOT</ws.module.version>
-        <email.module.version>1.4.1-SNAPSHOT</email.module.version>
-        <process.module.version>1.4.1-SNAPSHOT</process.module.version>
-        <sso.module.version>1.4.1-SNAPSHOT</sso.module.version>
-        <uuid.module.version>1.4.1-SNAPSHOT</uuid.module.version>
-        <oauth.module.version>1.4.1-SNAPSHOT</oauth.module.version>
-        <handlebars.version>1.4.1-SNAPSHOT</handlebars.version>
-        <markdown.version>1.4.1-SNAPSHOT</markdown.version>
+        <ws.module.version>1.5.1-SNAPSHOT</ws.module.version>
+        <email.module.version>1.5.1-SNAPSHOT</email.module.version>
+        <process.module.version>1.5.1-SNAPSHOT</process.module.version>
+        <sso.module.version>1.5.1-SNAPSHOT</sso.module.version>
+        <uuid.module.version>1.5.1-SNAPSHOT</uuid.module.version>
+        <oauth.module.version>1.5.1-SNAPSHOT</oauth.module.version>
+        <handlebars.version>1.5.1-SNAPSHOT</handlebars.version>
+        <markdown.version>1.5.1-SNAPSHOT</markdown.version>
     </properties>
 
     <build>

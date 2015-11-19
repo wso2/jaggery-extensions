@@ -16,7 +16,7 @@
                 localizations = require(localeResourcesBasePath + 'locale_' + locale + '.json');
                 fallBackLocalizations = require(localeResourcesBasePath + 'locale_default.json');
             } else {  //If not reading Strings from default English locale file.
-                localizations = require(localeResourcesBasePath + 'locale_en.json');
+                localizations = require(localeResourcesBasePath + 'locale_default.json');
             }
         } catch (e) {
             localizations = {};
@@ -26,10 +26,10 @@
     var getLocalString = function (key) {
         if (localizations[key]) {
             return localizations[key]
-        } else if(fallBackLocalizations) {
+        } else if(fallBackLocalizations[key]) {
             return fallBackLocalizations[key];
         } else {
-            return key;
+            return null;
         }
 
     };
@@ -37,7 +37,7 @@
 
     this.localize = function (key, fallback) {
         var localized = getLocalString(key);
-        if (localized !== key) {
+        if (localized) {
             return localized;
         } else {
             return fallback;
