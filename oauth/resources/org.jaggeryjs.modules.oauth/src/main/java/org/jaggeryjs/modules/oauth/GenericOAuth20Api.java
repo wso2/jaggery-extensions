@@ -11,6 +11,7 @@ public class GenericOAuth20Api extends DefaultApi20 {
     private String AUTHORIZE_URL;
     private String ACCESS_TOKEN_EP;
     private String CALLBACK_URL;
+    private String SCOPE;
 
 	public void setAuthorizeUrl(String authorizeUrl) {
         this.AUTHORIZE_URL = authorizeUrl;
@@ -33,17 +34,25 @@ public class GenericOAuth20Api extends DefaultApi20 {
 		CALLBACK_URL = cALLBACK_URL;
 	}
 
+    public String getScope() {
+        return SCOPE;
+    }
+
+    public void setScope(String scope) {
+        this.SCOPE = scope;
+    }
+
     @Override
     public String getAuthorizationUrl(OAuthConfig config) {
         Preconditions.checkValidUrl(getCallBackUrl(), "Must provide a valid url as callback.");
 
         // Append scope if present
-        if (config.hasScope()) {
+        if (getScope() != null && !getScope().trim().equals("")) {
             return AUTHORIZE_URL
                     + "?client_id=" + config.getApiKey()
                     + "&response_type=code"
                     + "&redirect_uri=" + OAuthEncoder.encode(getCallBackUrl())
-                    + "&scope=" + OAuthEncoder.encode(config.getScope());
+                    + "&scope=" + OAuthEncoder.encode(this.getScope());
         } else {
             return AUTHORIZE_URL
                     + "?client_id=" + config.getApiKey()

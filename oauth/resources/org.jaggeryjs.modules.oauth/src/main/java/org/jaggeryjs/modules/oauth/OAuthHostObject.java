@@ -25,6 +25,7 @@ public class OAuthHostObject extends ScriptableObject {
     private Verifier verifier;
     private Response response;
     private OAuthVersion oAuthVersion;
+    private String callback;
     
     enum OAuthVersion {
     	OAUTH1, OAUTH2
@@ -68,6 +69,7 @@ public class OAuthHostObject extends ScriptableObject {
 
                 oauthho.apiKey = providerConfig.getApi_key();
                 oauthho.apiSecret = providerConfig.getApi_secret();
+                oauthho.callback = (providerConfig.getCallback_url() != null) ? providerConfig.getCallback_url() : OAuthConstants.OUT_OF_BAND;
 
                 if (providerConfig.getOAuth_version() == 1.0) {
                 	
@@ -84,6 +86,7 @@ public class OAuthHostObject extends ScriptableObject {
                             .provider(oauth10aApi)
                             .apiKey(oauthho.apiKey)
                             .apiSecret(oauthho.apiSecret)
+                            .callback(oauthho.callback)
                             .build();
 
                 } else if (providerConfig.getOAuth_version() == 2.0) {
@@ -96,10 +99,13 @@ public class OAuthHostObject extends ScriptableObject {
                     GenericOAuth20Api oauth20Api = new GenericOAuth20Api();
                     oauth20Api.setAccessTokenEP(providerConfig.getAccess_token_url());
                     oauth20Api.setAuthorizeUrl(providerConfig.getAuthorization_url());
+                    oauth20Api.setCallBackUrl(providerConfig.getCallback_url());
+                    oauth20Api.setScope(providerConfig.getScope());
                     oauthho.oauthService = new ServiceBuilder()
                             .provider(oauth20Api)
                             .apiKey(oauthho.apiKey)
                             .apiSecret(oauthho.apiSecret)
+                            .callback(oauthho.callback)
                             .build();
                 }
 
