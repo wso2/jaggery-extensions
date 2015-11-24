@@ -24,7 +24,7 @@
     var HISTORY_PATH_SEPERATOR = '_';
     var ASSET_PATH_SEPERATOR = '/';
     var lcHistoryRegExpression = new RegExp(ASSET_PATH_SEPERATOR, 'g');
-    var HISTORY_PATH = '/_system/governance/_system/governance/repository/components/org.wso2.carbon.governance/lifecycles/history/';
+    var HISTORY_PATH = '/_system/governance/repository/components/org.wso2.carbon.governance/lifecycles/history/';
 
 
     var buildArtifact = function (manager, artifact) {
@@ -347,7 +347,17 @@
         }
         //checkListItems = artifact.getAllCheckListItemNames();
 	    var lifecycleName = resolveLCName(arguments,artifact,2);//getLifecycleName(artifact);
-        artifact.invokeAction(state,lifecycleName);
+
+        try {
+            //artifact.invokeAction(state,lifecycleName);
+            this.registry.invokeAspect(options.path,lifecycleName,state,{});
+
+        } catch (e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
+            throw e;
+        }
     };
     /*
      Gets the current lifecycle state
@@ -398,7 +408,7 @@
                 +'Please make sure that a valid id is provided and the asset manager is of the same type as the asset.');
             return lcs;
         }
-        var availableLifecycles = artifact.getLifecycleNames(); 
+        var availableLifecycles = artifact.getLifecycleNames();
         //The returned object is a Java String array so must be converted
         for(var index = 0 ; index< availableLifecycles.length; index++){
             lcs.push(String(availableLifecycles[index]));
