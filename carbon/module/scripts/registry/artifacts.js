@@ -617,7 +617,7 @@
             'count': 12,
             'sortOrder': 'ASC',
             'sortBy': 'overview_name',
-            'paginationLimit': 2147483647
+            'paginationLimit': 30
         };
 
         if (!pagin) {
