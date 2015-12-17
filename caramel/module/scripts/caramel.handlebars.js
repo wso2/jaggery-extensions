@@ -153,6 +153,14 @@ engine('handlebars', (function () {
         }
         return caramel.url(path);
     });
+    
+    /**
+     * Registers  'encodeURIComponent' handler for resolving encode URI components
+     * {{encodeURIComponent "test&test"}}
+     */
+    Handlebars.registerHelper('encodeURIComponent', function (comp) {
+        return encodeURIComponent(comp);
+    });
 
     /**
      * Serialize the current content to the out put
