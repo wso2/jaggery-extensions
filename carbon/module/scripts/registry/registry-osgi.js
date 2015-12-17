@@ -74,7 +74,8 @@ var registry = registry || {};
         var resources = resource.getChildren();
         //we have to manually sort this due to the bug in registry.getChildren() (#1 above)
         //resources.sort(resourceSorter(paging.sort));
-        return resources.slice(paging.start, paging.start + paging.count);
+//        return resources.slice(paging.start, paging.start + paging.count);
+        return resources;
     };
 
     var resource = function (registry, resource) {
