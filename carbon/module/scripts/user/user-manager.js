@@ -117,6 +117,14 @@
     UserManager.prototype.allRoles = function () {
         return this.manager.getRoleNames();
     };
+
+    UserManager.prototype.searchRoles = function (filter, maxLimit, noInternalRole, noSystemRole, noSharedRole) {
+        return this.manager.getRoleNames(filter, maxLimit, noInternalRole, noSystemRole, noSharedRole);
+    };
+
+    UserManager.prototype.getMaxLimit = function (type){
+        return this.manager.getMaxListCount(type);
+    };
     
     UserManager.prototype.getUserListOfRole = function (role) {
         return this.manager.getUserListOfRole(role);
