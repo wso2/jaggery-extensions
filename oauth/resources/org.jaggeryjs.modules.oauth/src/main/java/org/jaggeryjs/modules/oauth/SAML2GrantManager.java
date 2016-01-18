@@ -65,11 +65,19 @@ public class SAML2GrantManager {
             writer.close();
 
             //Get Response
-            InputStream reader = connection.getInputStream();
-            String response = IOUtils.toString(reader, "UTF-8");
-            IOUtils.closeQuietly(reader);
-
-            return response;
+            int statusCode = connection.getResponseCode();
+            InputStream reader;
+            if (statusCode >= 200 && statusCode < 300) {
+                reader = connection.getInputStream();
+                String response = IOUtils.toString(reader, "UTF-8");
+                IOUtils.closeQuietly(reader);
+                return response;
+            } else {
+                reader = connection.getErrorStream();
+                String response = IOUtils.toString(reader, "UTF-8");
+                IOUtils.closeQuietly(reader);
+                throw new ScriptException("HTTP error with status = " + statusCode + " and message = "  + response);
+            }
         } catch (MalformedURLException ex) {
             throw new ScriptException("The target URL is not valid.", ex);
         } catch (ProtocolException ex) {
