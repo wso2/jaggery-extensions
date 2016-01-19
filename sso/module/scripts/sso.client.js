@@ -51,6 +51,8 @@ var client = {};
         }else{
             tDomain = Util.getDomainName(samlObj);
             tId = carbon.server.tenantId({domain: tDomain});
+            var identityTenantUtil = Packages.org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+            identityTenantUtil.initializeRegistry(tId,tDomain);
         }
         return Util.validateSignature(samlObj,
             config.KEY_STORE_NAME, config.KEY_STORE_PASSWORD, config.IDP_ALIAS, tId, tDomain);
