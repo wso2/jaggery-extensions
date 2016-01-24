@@ -47,7 +47,10 @@
 
                     //Check if there is only one element
                     if (data.length == 1) {
-                        attributes[name] = String(artifact.getAttribute(name));
+                        //Make sure the attribute has a value
+                        if(artifact.getAttribute(name)!=null){
+                            attributes[name] = String(artifact.getAttribute(name));
+                        }
                     }
                     else {
                         attributes[name] = data;
