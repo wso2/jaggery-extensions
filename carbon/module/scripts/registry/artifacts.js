@@ -65,9 +65,15 @@
     };
 
     var createArtifact = function (manager, options) {
-        var name, attribute, i, length, lc,
-            artifact = manager.newGovernanceArtifact(new QName(options.name)),
+        var name, attribute, i, length, lc, artifact,
             attributes = options.attributes;
+
+        if(options.namespaceAttribute && attributes[options.namespaceAttribute]) {
+            artifact = manager.newGovernanceArtifact(new QName(attributes[options.namespaceAttribute], options.name))
+        } else {
+            artifact = manager.newGovernanceArtifact(new QName(options.name))
+        }
+
         for (name in attributes) {
             if (attributes.hasOwnProperty(name)) {
                 attribute = attributes[name];
