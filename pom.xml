@@ -66,13 +66,13 @@
         <commons.logging.version>1.1.1</commons.logging.version>
         <commons.logging.imp.pkg.version>1.1.1</commons.logging.imp.pkg.version>
 
-        <carbon.kernel.version>4.4.1</carbon.kernel.version>
+        <carbon.kernel.version>4.4.4</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.4.0, 5.0.0)</carbon.kernel.imp.pkg.version>
 
-        <jaggery.version>0.11.2</jaggery.version>
+        <jaggery.version>0.12.3</jaggery.version>
         <jaggery.imp.pkg.version>[0.10.0, 1.0.0)</jaggery.imp.pkg.version>
 
-        <carbon.commons.version>4.4.8</carbon.commons.version>
+        <carbon.commons.version>4.5.2</carbon.commons.version>
 
         <rhino.version>1.7.0.R4.wso2v1</rhino.version>
         <rhino.imp.pkg.version>1.7.0.R4.wso2v1</rhino.imp.pkg.version>
@@ -89,8 +89,8 @@
         <commons-codec.osgi.version>1.4.0.wso2v1</commons-codec.osgi.version>
         <sso.hostobjects.version>1.0.1</sso.hostobjects.version>
 
-        <axis2.osgi.version>1.6.1.wso2v12</axis2.osgi.version>
-        <axiom.osgi.version>1.2.11.wso2v6</axiom.osgi.version>
+        <axis2.osgi.version>1.6.1.wso2v16</axis2.osgi.version>
+        <axiom.osgi.version>1.2.11.wso2v9</axiom.osgi.version>
         <xmlschema.osgi.version>1.4.7.wso2v3</xmlschema.osgi.version>
         <rampart.osgi.version>1.6.1.wso2v16</rampart.osgi.version>
         <wss4j.osgi.version>1.5.11.wso2v11</wss4j.osgi.version>
