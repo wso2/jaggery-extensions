@@ -66,7 +66,7 @@
         <commons.logging.version>1.1.1</commons.logging.version>
         <commons.logging.imp.pkg.version>1.1.1</commons.logging.imp.pkg.version>
 
-        <carbon.kernel.version>4.4.4</carbon.kernel.version>
+        <carbon.kernel.version>4.4.5</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.4.0, 5.0.0)</carbon.kernel.imp.pkg.version>
 
         <jaggery.version>0.12.3</jaggery.version>
