@@ -245,7 +245,10 @@
     }
 
     ArtifactManager.prototype.get = function (id) {
-        return buildArtifact(this, this.manager.getGenericArtifact(id))
+        var artifact = this.manager.getGenericArtifact(id);
+        //An asset may not be returned in some scenarios (e.g. a user does not have access
+        //to the asset)
+        return artifact ? buildArtifact(this,artifact) : null;
     };
 
     ArtifactManager.prototype.count = function () {
