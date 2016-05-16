@@ -118,7 +118,6 @@ public class Util {
         try {
             doBootstrap();
             DocumentBuilderFactory documentBuilderFactory = getSecuredDocumentBuilder();
-//            documentBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
             Document document = docBuilder.parse(new ByteArrayInputStream(authReqStr.trim().getBytes()));
             Element element = document.getDocumentElement();
