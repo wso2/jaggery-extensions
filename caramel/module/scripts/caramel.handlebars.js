@@ -606,7 +606,9 @@ engine('handlebars', (function () {
                                     o = helper.resources(page, meta);
                                     blockData.resources.js = resolve('js', o.js);
                                     blockData.resources.css = resolve('css', o.css);
-                                    blockData.resources.code = o.code ? evalCode(o.code, meta.data, theme) : null;
+                                    blockData.resources.code = o.code ? o.code.reduce(function(pre,cur){
+                                        return pre + evalCode(cur, meta.data, theme);
+                                    },"") : null;
                                 }
                             }
                         }
