@@ -29,6 +29,7 @@ var client = {};
     var Util = Packages.org.jaggeryjs.modules.sso.common.util.Util,
         carbon = require('carbon'),
         log = new Log();
+    var SSOManager = Packages.org.jaggeryjs.modules.sso.common.managers.SSOManager;
 
     /**
      * obtains an encoded saml response and return a decoded/unmarshalled saml obj
@@ -149,6 +150,14 @@ var client = {};
 
         return sessionIndex;
 
+    };
+
+    client.login = function(idpSessionIndex,session){
+        SSOManager.getInstance().login(idpSessionIndex,session);
+    };
+
+    client.logout = function(idpSessionIndex) {
+        SSOManager.getInstance().logout(idpSessionIndex);
     };
 
 }(client));

@@ -32,6 +32,13 @@ public class SSOConstants {
 
     public static final String SAML2_NAME_ID_POLICY = "urn:oasis:names:tc:SAML:2.0:nameid-format:entity";
     public static final String LOGOUT_USER = "urn:oasis:names:tc:SAML:2.0:logout:user";
+    public static final String CLUSTERING_MESSAGE = "SSOSessionInvalidationClusterMessage{sessionIndex=%s}";
+    public static final String SESSION_INVALIDATION_MESSAGE = "Invalidating session with idp session index=%s";
+
+    public static final String OSGI_SERVICE_CONFIGURATION_CONTEXT = "org.wso2.carbon.utils.ConfigurationContextService";
+    public static final int MAX_CLUSTER_MESSAGE_RETRY_COUNT = 4;
+    public static final int CLUSTERING_MESSAGE_RETRY_DELAY = 2000;
+    public static final boolean CLUSTERING_MESSAGE_ISRPC = true;
 
     public SSOConstants() {
     }
