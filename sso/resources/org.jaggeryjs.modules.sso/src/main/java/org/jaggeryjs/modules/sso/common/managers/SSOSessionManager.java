@@ -45,6 +45,7 @@ public class SSOSessionManager {
 
     private SSOSessionManager() {
         sessionHostObjectMap = new ConcurrentHashMap<String,Set<SessionHostObject>>();
+        localSessionMap = new ConcurrentHashMap<String,String>();
     }
 
     public static SSOSessionManager getInstance() {
