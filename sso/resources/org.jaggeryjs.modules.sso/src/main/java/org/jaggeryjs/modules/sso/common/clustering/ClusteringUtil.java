@@ -53,6 +53,7 @@ public class ClusteringUtil {
         } catch (ClusteringFault e) {
             log.error("Unable to send the clustering message.The system will now attempt to retry " +
                     "sending the message", e);
+            //TODO: Review this section
             Thread th = new Thread(new FailedClusterMessageTransmitter(agent, message));
             th.start();
         }
@@ -61,6 +62,7 @@ public class ClusteringUtil {
     public static ClusteringAgent createClusteringAgent() {
         ClusteringAgent agent = null;
         try {
+            //TODO: Review this section
             PrivilegedCarbonContext privilegedCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
             ConfigurationContextService configContextSvc = (ConfigurationContextService) privilegedCarbonContext.
                     getOSGiService(Class.forName(SSOConstants.OSGI_SERVICE_CONFIGURATION_CONTEXT),

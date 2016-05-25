@@ -160,4 +160,8 @@ var client = {};
         SSOSessionManager.getInstance().logout(indicator,issuer);
     };
 
+    client.cleanUp = function(indicator,issuer){
+        SSOSessionManager.getInstance().cleanUp(indicator,issuer);
+    }
+
 }(client));
