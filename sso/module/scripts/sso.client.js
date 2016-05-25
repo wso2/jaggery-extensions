@@ -152,12 +152,12 @@ var client = {};
 
     };
 
-    client.login = function(idpSessionIndex,session){
-        SSOSessionManager.getInstance().login(idpSessionIndex,session);
+    client.login = function(idpSessionIndex,issuer,session){
+        SSOSessionManager.getInstance().login(idpSessionIndex,issuer,session);
     };
 
-    client.logout = function(idpSessionIndex) {
-        SSOSessionManager.getInstance().logout(idpSessionIndex);
+    client.logout = function(indicator,issuer) {
+        SSOSessionManager.getInstance().logout(indicator,issuer);
     };
 
 }(client));

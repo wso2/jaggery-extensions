@@ -29,10 +29,12 @@ import org.jaggeryjs.modules.sso.common.managers.SSOSessionManager;
 public class SessionInvalidateClusterMessage extends ClusteringMessage {
     private static final Log log = LogFactory.getLog(SessionInvalidateClusterMessage.class);
     private String idpSessionIndex;
+    private String issuer;
 
-    public SessionInvalidateClusterMessage(String idpSessionIndex) {
+    public SessionInvalidateClusterMessage(String idpSessionIndex,String issuer) {
         super();
         this.idpSessionIndex = idpSessionIndex;
+        this.issuer = issuer;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class SessionInvalidateClusterMessage extends ClusteringMessage {
         if (log.isDebugEnabled()) {
             log.debug(String.format(SSOConstants.SESSION_INVALIDATION_MESSAGE, idpSessionIndex));
         }
-        SSOSessionManager.getInstance().logoutClusteredNodes(idpSessionIndex);
+        SSOSessionManager.getInstance().logoutClusteredNodes(idpSessionIndex,issuer);
     }
 
     public String toString() {

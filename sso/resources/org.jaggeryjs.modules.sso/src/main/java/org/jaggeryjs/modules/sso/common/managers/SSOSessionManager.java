@@ -16,14 +16,13 @@
 
 package org.jaggeryjs.modules.sso.common.managers;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jaggeryjs.modules.sso.common.clustering.ClusteringUtil;
+import org.jaggeryjs.modules.sso.common.clustering.IssuerSession;
+import org.jaggeryjs.modules.sso.common.clustering.IssuerSessionMap;
 import org.jaggeryjs.modules.sso.common.clustering.SessionInvalidateClusterMessage;
-import org.jaggeryjs.scriptengine.exceptions.ScriptException;
 import org.jaggeryjs.hostobjects.web.SessionHostObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,12 +38,12 @@ public class SSOSessionManager {
      * This map contains the idp session index mapped against the
      * sessions of applications which are SSOed together
      */
-    private static Map<String, Set<SessionHostObject>> sessionHostObjectMap;
-    private static Map<String,String> sessionToIDPIndexMap;
+    private static Map<String, IssuerSessionMap> sessionHostObjectMap;
+    private static Map<String, String> sessionToIDPIndexMap;
     private static SSOSessionManager instance = new SSOSessionManager();
 
     private SSOSessionManager() {
-        sessionHostObjectMap = new ConcurrentHashMap<String, Set<SessionHostObject>>();
+        sessionHostObjectMap = new ConcurrentHashMap<String,IssuerSessionMap>();
         sessionToIDPIndexMap = new ConcurrentHashMap<String,String>();
     }
 
@@ -59,9 +58,10 @@ public class SSOSessionManager {
      * @param idpSessionIndex The IDP session index provided in the SAML login response
      * @param session         A Session HostObject
      */
-    public void login(String idpSessionIndex, SessionHostObject session) {
-        registerSessionWithIDPSessionIndex(idpSessionIndex, session);
+    public void login(String idpSessionIndex,String issuer,SessionHostObject session) {
+        registerIssuerSessionWithIDPSessionIndex(idpSessionIndex, issuer, session);
     }
+
 
     /**
      * Handles the Single Logout operation by invalidating the sessions mapped
@@ -69,19 +69,20 @@ public class SSOSessionManager {
      *
      * @param idpSessionIndex A String key which is provided in the SAML login response indicating IDP session index
      */
-    public synchronized void logout(String idpSessionIndex) {
-        removeSessions(idpSessionIndex);
+    public void logout(String idpSessionIndex,String issuer) {
+        removeIssuerSession(idpSessionIndex, issuer);
     }
 
     /**
      * Handles the Single Logout operation by first resolving the session ID to a IDP session index
      * @param session
      */
-    public synchronized void logout(SessionHostObject session){
-        String sessionId = getSessionId(session);
+    public void logout(SessionHostObject session,String issuer){
+        String sessionId = IssuerSession.getSessionId(session);
         String idpSessionIndex = getIDPSessionIndex(sessionId);
-        removeSessions(idpSessionIndex);
+        removeIssuerSession(idpSessionIndex, issuer);
     }
+
 
     /**
      * Handles the Single Logout operation by invalidating the sessions mapped
@@ -93,8 +94,8 @@ public class SSOSessionManager {
      *
      * @param idpSessionIndex A String key which is provided in the SAML login response indicating IDP session index
      */
-    public void logoutClusteredNodes(String idpSessionIndex) {
-        removeSessionsInCluster(idpSessionIndex);
+    public void logoutClusteredNodes(String idpSessionIndex,String issuer) {
+        removeIssuerSessionInCluster(idpSessionIndex, issuer);
     }
 
     /**
@@ -106,13 +107,14 @@ public class SSOSessionManager {
      * @param idpSessionIndex A String key which is provided in the SAML login response  indicating IDP session index
      * @param session
      */
-    private void registerSessionWithIDPSessionIndex(String idpSessionIndex, SessionHostObject session) {
-        Set<SessionHostObject> sessionSet = getSessionSet(idpSessionIndex);
-        if (sessionSet == null) {
-            sessionSet = createSessionSet(idpSessionIndex);
+    private void registerIssuerSessionWithIDPSessionIndex(String idpSessionIndex, String issuer, SessionHostObject session) {
+        IssuerSessionMap issuerSessionMap = getIssuerSessionMap(idpSessionIndex);
+        if (issuerSessionMap == null) {
+            issuerSessionMap = createIssuerSessionMap(idpSessionIndex);
         }
-        addToSessionSet(session, sessionSet);
-        String localSessionId = getSessionId(session);
+        IssuerSession issuerSession = new IssuerSession(issuer,session);
+        addToIssuerSessionMap(issuerSession, issuerSessionMap);
+        String localSessionId = issuerSession.getSessionId();
         sessionToIDPIndexMap.put(localSessionId,idpSessionIndex);
     }
 
@@ -123,16 +125,16 @@ public class SSOSessionManager {
      *
      * @param idpSessionIndex A String key which is provided in the SAML login response  indicating IDP session index
      */
-    private void removeSessionsInCluster(String idpSessionIndex) {
+    private void removeIssuerSessionInCluster(String idpSessionIndex, String issuer) {
         //If the IDP session index does not exist then attempt to notify
         //the other members of the cluster
         if (!sessionHostObjectMap.containsKey(idpSessionIndex)) {
-            notifyClusterToInvalidateSession(idpSessionIndex);
+            notifyClusterToInvalidateSession(idpSessionIndex,issuer);
             //There is nothing else to do as the idpSessionIndex does not
             //contain any sessions
             return;
         }
-        cleanUpSessionsDetails(idpSessionIndex);
+        cleanUpSessionsDetails(idpSessionIndex,issuer);
     }
 
     /**
@@ -141,13 +143,13 @@ public class SSOSessionManager {
      *
      * @param idpSessionIndex A String key which is provided in the SAML login response  indicating IDP session index
      */
-    private void removeSessions(String idpSessionIndex) {
+    private void removeIssuerSession(String idpSessionIndex, String issuer) {
         if (!sessionHostObjectMap.containsKey(idpSessionIndex)) {
             //There is nothing else to do as the idpSessionIndex does not
             //contain any sessions
             return;
         }
-        cleanUpSessionsDetails(idpSessionIndex);
+        cleanUpSessionsDetails(idpSessionIndex,issuer);
     }
 
     /**
@@ -155,9 +157,9 @@ public class SSOSessionManager {
      * session indices are freed up
      * @param idpSessionIndex A String key which is provided in the SAML login response  indicating IDP session index
      */
-    private void cleanUpSessionsDetails(String idpSessionIndex) {
-        Set<SessionHostObject> sessionSet = getSessionSet(idpSessionIndex);
-        invalidateSessions(sessionSet);
+    private void cleanUpSessionsDetails(String idpSessionIndex,String issuer) {
+        IssuerSessionMap issuerMap = getIssuerSessionMap(idpSessionIndex);
+        invalidateIssuerSession(issuerMap, issuer);
         cleanUpIDPSessionDetails(idpSessionIndex);
     }
 
@@ -183,66 +185,30 @@ public class SSOSessionManager {
         sessionToIDPIndexMap.remove(sessionId);
     }
 
-    private void invalidateSessions(Set<SessionHostObject> sessionSet) {
-        log.info("Invalidating sessions");
-        log.info("Set size: " + sessionSet.size());
-        for (SessionHostObject session : sessionSet) {
-            invalidateSession(session);
-        }
-        log.info("Finished invalidating sessions");
-    }
-
-    private void invalidateSession(SessionHostObject session) {
-        String localSessionId = getSessionId(session);
-        if (localSessionId == null) {
-            log.error("Unable to invalidate session since the session ID could not be resolved from the provided " +
-                    "session");
+    private void invalidateIssuerSession(IssuerSessionMap issuerMap, String issuer) {
+        if(!issuerMap.containsKey(issuer)){
             return;
         }
-
-        //Check if the session has been already invalidated before attempting to invalidate
-        Object[] args = new Object[0];
-        try {
-            log.info("Invalidating session " + localSessionId);
-            SessionHostObject.jsFunction_invalidate(null, session, args, null);
-            //Remove the sessionIndex
-            cleanUpLocalSessionDetails(localSessionId);
-        } catch (ScriptException e) {
-            log.error("Unable to invalidate local session with ID : " + localSessionId, e);
-        }
-
+        IssuerSession issuerSession = issuerMap.getIssuerSession(issuer);
+        String sessionId = issuerSession.getSessionId();
+        issuerSession.invalidate();
+        cleanUpLocalSessionDetails(sessionId);
     }
 
-    private Set<SessionHostObject> getSessionSet(String idpSessionIndex) {
+    private IssuerSessionMap getIssuerSessionMap(String idpSessionIndex) {
         return sessionHostObjectMap.get(idpSessionIndex);
     }
 
-    private Set<SessionHostObject> createSessionSet(String idpSessionIndex) {
+    private IssuerSessionMap createIssuerSessionMap(String idpSessionIndex) {
         //Check if a session set exists
-        Set<SessionHostObject> set = new HashSet<SessionHostObject>();
-        sessionHostObjectMap.put(idpSessionIndex, set);
-        return set;
+        IssuerSessionMap issuerMap = new IssuerSessionMap();
+        sessionHostObjectMap.put(idpSessionIndex, issuerMap);
+        return issuerMap;
     }
 
     //TODO: Synch?
-    private void addToSessionSet(SessionHostObject session, Set<SessionHostObject> sessionSet) {
-        sessionSet.add(session);
-    }
-
-    /**
-     * Obtains the local session ID by invoking the getId method
-     * @param session
-     * @return
-     */
-    private String getSessionId(SessionHostObject session) {
-        Object[] args = new Object[0];
-        String id = null;
-        try {
-            id = SessionHostObject.jsFunction_getId(null, session, args, null);
-        } catch (ScriptException e) {
-            log.error("Unable to invoke getId method of the Session HostObject.", e);
-        }
-        return id;
+    private void addToIssuerSessionMap(IssuerSession issuerSession, IssuerSessionMap map) {
+        map.addIssuerSession(issuerSession);
     }
 
     /**
@@ -254,7 +220,7 @@ public class SSOSessionManager {
         return sessionToIDPIndexMap.get(sessionId);
     }
 
-    private void notifyClusterToInvalidateSession(String idpSessionIndex) {
-        ClusteringUtil.sendClusterMessage(new SessionInvalidateClusterMessage(idpSessionIndex));
+    private void notifyClusterToInvalidateSession(String idpSessionIndex,String issuer) {
+        ClusteringUtil.sendClusterMessage(new SessionInvalidateClusterMessage(idpSessionIndex,issuer));
     }
 }
