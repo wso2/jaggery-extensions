@@ -103,6 +103,11 @@ public class SSOSessionManager {
         log.info("Cleaning up session details of issue " + issuer);
         String sessionId = IssuerSession.getSessionId(session);
         String idpSessionIndex = getIDPSessionIndex(sessionId);
+        if(idpSessionIndex == null) {
+            log.info("Unable to locate an IDP session index for provided session " + sessionId + ".Aborting" +
+                    " clean up operations.");
+            return;
+        }
         IssuerSessionMap issuerMap = getIssuerSessionMap(idpSessionIndex);
         cleanUpIssuerMap(issuerMap, issuer);
         cleanUpLocalSessionDetails(sessionId);
@@ -159,7 +164,7 @@ public class SSOSessionManager {
         //If the IDP session index does not exist then attempt to notify
         //the other members of the cluster
         if (!sessionHostObjectMap.containsKey(idpSessionIndex)) {
-            notifyClusterToInvalidateSession(idpSessionIndex, issuer);
+
             //There is nothing else to do as the idpSessionIndex does not
             //contain any sessions
             return;
@@ -175,6 +180,7 @@ public class SSOSessionManager {
      */
     private void removeIssuerSession(String idpSessionIndex, String issuer) {
         if (!sessionHostObjectMap.containsKey(idpSessionIndex)) {
+            notifyClusterToInvalidateSession(idpSessionIndex, issuer);
             //There is nothing else to do as the idpSessionIndex does not
             //contain any sessions
             return;
