@@ -47,7 +47,6 @@ public class SessionInvalidateClusterMessage extends ClusteringMessage {
         if (log.isDebugEnabled()) {
             log.debug(String.format(SSOConstants.SESSION_INVALIDATION_MESSAGE, idpSessionIndex));
         }
-        log.info("Executing cluster message " + this);
         SSOSessionManager.getInstance().logoutClusteredNodes(idpSessionIndex, issuer);
     }
 

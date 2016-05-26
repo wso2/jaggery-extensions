@@ -19,11 +19,11 @@ package org.jaggeryjs.modules.sso.common.clustering;
 import org.apache.axis2.clustering.ClusteringAgent;
 import org.apache.axis2.clustering.ClusteringFault;
 import org.apache.axis2.clustering.ClusteringMessage;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jaggeryjs.modules.sso.common.constants.SSOConstants;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.utils.ConfigurationContextService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.util.Hashtable;
 
@@ -43,13 +43,16 @@ public class ClusteringUtil {
         if (agent == null) {
             log.error("Unable to send the clustering message as a clustering agent was not obtained.");
             if (log.isDebugEnabled()) {
-                log.debug("Failed cluster message : " + message);
+                log.debug(String.format("Failed to send cluster message :%s " ,message));
             }
             return;
         }
         try {
             agent.sendMessage(message, SSOConstants.CLUSTERING_MESSAGE_ISRPC);
-            log.info("Successfully transmitted cluster message : " + message);
+            if(log.isDebugEnabled()){
+
+                log.debug(String.format("Successfully transmitted cluster message :%s", message));
+            }
         } catch (ClusteringFault e) {
             log.error("Unable to send the clustering message.The system will now attempt to retry " +
                     "sending the message", e);

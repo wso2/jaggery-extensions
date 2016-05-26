@@ -16,16 +16,16 @@
 
 package org.jaggeryjs.modules.sso.common.managers;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jaggeryjs.hostobjects.web.SessionHostObject;
 import org.jaggeryjs.modules.sso.common.clustering.ClusteringUtil;
 import org.jaggeryjs.modules.sso.common.clustering.IssuerSession;
 import org.jaggeryjs.modules.sso.common.clustering.IssuerSessionMap;
 import org.jaggeryjs.modules.sso.common.clustering.SessionInvalidateClusterMessage;
-import org.jaggeryjs.hostobjects.web.SessionHostObject;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -60,9 +60,13 @@ public class SSOSessionManager {
      * @param session         A Session HostObject
      */
     public void login(String idpSessionIndex, String issuer, SessionHostObject session) {
-        log.info("Starting to login issuer " + issuer);
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Trying to register issuer:%s ", issuer));
+        }
         registerIssuerSessionWithIDPSessionIndex(idpSessionIndex, issuer, session);
-        log.info("Finished logging in issuer " + issuer);
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Finished registering issuer:%s ", issuer));
+        }
     }
 
 
@@ -73,9 +77,14 @@ public class SSOSessionManager {
      * @param idpSessionIndex A String key which is provided in the SAML login response indicating IDP session index
      */
     public void logout(String idpSessionIndex, String issuer) {
-        log.info("Starting to logout issuer " + issuer);
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("trying to remove issuer:%s  using IDP Session Index", issuer));
+        }
         removeIssuerSession(idpSessionIndex, issuer);
-        log.info("Finished logging out issuer " + issuer);
+
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Finished removing issuer:%s using IDP Session Index ", issuer));
+        }
     }
 
     /**
@@ -84,11 +93,17 @@ public class SSOSessionManager {
      * @param session
      */
     public void logout(SessionHostObject session, String issuer) {
-        log.info("Starting to logout issuer " + issuer);
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Trying to remove issuer:%s using Session ", issuer));
+        }
+
         String sessionId = IssuerSession.getSessionId(session);
         String idpSessionIndex = getIDPSessionIndex(sessionId);
         removeIssuerSession(idpSessionIndex, issuer);
-        log.info("Finished logging out issuer " + issuer);
+
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Finished removing issuer:%s  using Session", issuer));
+        }
     }
 
     /**
@@ -100,19 +115,24 @@ public class SSOSessionManager {
      * @param issuer
      */
     public void cleanUp(SessionHostObject session, String issuer) {
-        log.info("Cleaning up session details of issue " + issuer);
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Cleaning up session details of issuer: %s ", issuer));
+        }
         String sessionId = IssuerSession.getSessionId(session);
         String idpSessionIndex = getIDPSessionIndex(sessionId);
-        if(idpSessionIndex == null) {
-            log.info("Unable to locate an IDP session index for provided session " + sessionId + ".Aborting" +
-                    " clean up operations.");
+        if (idpSessionIndex == null) {
+            log.warn(String.format("Unable to locate an IDP Session Index for the provided session:%s .Aborting" +
+                    " clean up operations.", sessionId));
             return;
         }
         IssuerSessionMap issuerMap = getIssuerSessionMap(idpSessionIndex);
         cleanUpIssuerMap(issuerMap, issuer);
         cleanUpLocalSessionDetails(sessionId);
         cleanUpIDPSessionDetails(idpSessionIndex, issuerMap);
-        log.info("Finished cleaning up session details of issuer : " + issuer);
+
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Finished cleaning up session details of issuer :%s ", issuer));
+        }
     }
 
 
@@ -150,7 +170,10 @@ public class SSOSessionManager {
         String localSessionId = issuerSession.getSessionId();
         sessionToIDPIndexMap.put(localSessionId, idpSessionIndex);
 
-        log.info("Registered session " + localSessionId + " to IDP session index " + idpSessionIndex);
+        if (log.isDebugEnabled()) {
+
+            log.debug(String.format("Registered Session Id: %s to IDP Session Index : %s", localSessionId, idpSessionIndex));
+        }
     }
 
     /**
@@ -213,7 +236,12 @@ public class SSOSessionManager {
         //We can only remove the idpSessionIndex if there are no valid sessions
         if (issuerMap.isEmpty()) {
             sessionHostObjectMap.remove(idpSessionIndex);
-            log.info("Removed IDP Session Index " + idpSessionIndex + " since there was were no active sessions");
+
+            if (log.isDebugEnabled()) {
+
+                log.debug(String.format("Removed IDP Session Index %s since there  " +
+                        "were no issuers", idpSessionIndex));
+            }
         }
     }
 
@@ -227,7 +255,11 @@ public class SSOSessionManager {
             return;
         }
         sessionToIDPIndexMap.remove(sessionId);
-        log.info("Removed issuer session ID " + sessionId);
+
+        if (log.isDebugEnabled()) {
+
+            log.debug(String.format("Removed issuer's Session Id:%s ", sessionId));
+        }
     }
 
     private void cleanUpIssuerMap(IssuerSessionMap issuerMap, String issuer) {
@@ -235,7 +267,9 @@ public class SSOSessionManager {
             return;
         }
         issuerMap.remove(issuer);
-        log.info("Removed issuer map entry for issuer: " + issuer);
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Removed issuer:%s ", issuer));
+        }
     }
 
     private void invalidateIssuerSession(IssuerSessionMap issuerMap, String issuer) {
@@ -246,7 +280,10 @@ public class SSOSessionManager {
         IssuerSession issuerSession = issuerMap.getIssuerSession(issuer);
         String sessionId = issuerSession.getSessionId();
         issuerSession.invalidate();
-        log.info("Invalidated the issuers session " + issuerSession);
+
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Invalidated the issuer session :%s ", issuerSession));
+        }
 
         cleanUpIssuerMap(issuerMap, issuer);
         cleanUpLocalSessionDetails(sessionId);
@@ -261,18 +298,23 @@ public class SSOSessionManager {
         //Check if a session set exists
         IssuerSessionMap issuerMap = new IssuerSessionMap();
         sessionHostObjectMap.put(idpSessionIndex, issuerMap);
-        log.info("Registered new issuer map for IDP session index " + idpSessionIndex);
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Registered new issuer map for IDP Session Index:%s ", idpSessionIndex));
+        }
         return issuerMap;
     }
 
     //TODO: Review this method (Should we synch this?)
     private void addToIssuerSessionMap(IssuerSession issuerSession, IssuerSessionMap map) {
         map.addIssuerSession(issuerSession);
-        log.info("Registered issuer session " + issuerSession);
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Registered issuer against Session: %s", issuerSession));
+        }
     }
 
     /**
      * Maps the local session ID to a IDP session index
+     *
      * @param sessionId
      * @return
      */
@@ -282,7 +324,9 @@ public class SSOSessionManager {
 
     private void notifyClusterToInvalidateSession(String idpSessionIndex, String issuer) {
         SessionInvalidateClusterMessage message = new SessionInvalidateClusterMessage(idpSessionIndex, issuer);
-        log.info("Sending cluster message " + message);
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Sending cluster message: %s ", message));
+        }
         ClusteringUtil.sendClusterMessage(message);
     }
 }

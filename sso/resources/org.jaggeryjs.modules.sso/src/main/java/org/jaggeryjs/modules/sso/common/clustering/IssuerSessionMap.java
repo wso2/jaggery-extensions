@@ -17,7 +17,6 @@
 
 package org.jaggeryjs.modules.sso.common.clustering;
 
-import org.jaggeryjs.hostobjects.web.SessionHostObject;
 
 import java.util.HashMap;
 

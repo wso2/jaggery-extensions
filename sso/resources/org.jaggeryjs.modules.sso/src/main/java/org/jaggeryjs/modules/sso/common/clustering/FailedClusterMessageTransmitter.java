@@ -19,9 +19,9 @@ package org.jaggeryjs.modules.sso.common.clustering;
 import org.apache.axis2.clustering.ClusteringAgent;
 import org.apache.axis2.clustering.ClusteringFault;
 import org.apache.axis2.clustering.ClusteringMessage;
-import org.jaggeryjs.modules.sso.common.constants.SSOConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jaggeryjs.modules.sso.common.constants.SSOConstants;
 
 /**
  * Responsible for attempting to retransmit a failed clustering message.This class will
@@ -48,6 +48,9 @@ public class FailedClusterMessageTransmitter implements Runnable {
             //Continue till either the retry count has been reached or till
             //message is successfully transmitted to the other cluster nodes
             while ((!success) && (retryCount < SSOConstants.MAX_CLUSTER_MESSAGE_RETRY_COUNT)) {
+                if(log.isDebugEnabled()){
+                    log.debug(String.format("Attempting to retransmit message : %s ",message));
+                }
                 success = send();
                 retryCount++;
                 Thread.sleep(SSOConstants.CLUSTERING_MESSAGE_RETRY_DELAY);
@@ -70,7 +73,7 @@ public class FailedClusterMessageTransmitter implements Runnable {
             agent.sendMessage(message, SSOConstants.CLUSTERING_MESSAGE_ISRPC);
             success = true;
         } catch (ClusteringFault e) {
-            log.error("Failed to send message " + message + ". Retry count at " + retryCount);
+            log.error("Failed to send message " + message + ". Retry count at " + retryCount,e);
         }
         return success;
     }
