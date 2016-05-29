@@ -62,11 +62,9 @@ public class IssuerSession {
         return id;
     }
 
-    /**
-     * Obtains the local session ID by invoking the getId method
-     */
+    //TODO Add comment
     public void invalidate() {
-        //Check if the session has been already invalidated before attempting to invalidate
+        //TODO: Check if the session has been already invalidated before attempting to invalidate
         Object[] args = new Object[0];
         try {
             SessionHostObject.jsFunction_invalidate(null, session, args, null);
