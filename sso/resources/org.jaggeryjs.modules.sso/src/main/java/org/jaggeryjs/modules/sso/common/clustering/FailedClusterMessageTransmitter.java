@@ -43,15 +43,15 @@ public class FailedClusterMessageTransmitter implements Runnable {
 
     @Override
     public void run() {
-        boolean success = false; //TODO: rename it to isSuccess
+        boolean isSuccess = false;
         try {
             //Continue till either the retry count has been reached or till
             //message is successfully transmitted to the other cluster nodes
-            while ((!success) && (retryCount < SSOConstants.MAX_CLUSTER_MESSAGE_RETRY_COUNT)) {
+            while ((!isSuccess) && (retryCount < SSOConstants.MAX_CLUSTER_MESSAGE_RETRY_COUNT)) {
                 if (log.isDebugEnabled()) {
                     log.debug(String.format("Attempting to retransmit message : %s ", message));
                 }
-                success = send();
+                isSuccess = send();
                 retryCount++;
                 Thread.sleep(SSOConstants.CLUSTERING_MESSAGE_RETRY_DELAY);
             }
@@ -61,20 +61,20 @@ public class FailedClusterMessageTransmitter implements Runnable {
         }
 
         //Determine if the message was sent
-        if (!success) {
+        if (!isSuccess) {
             log.error("Permanently failed to send clustering message " + message + " since max retry count has been " +
                     "reached.There will not be any further attempts to send this message.");
         }
     }
 
     private boolean send() {
-        boolean success = false; //TODO: Change success to isSuccess
+        boolean isSuccess = false;
         try {
             agent.sendMessage(message, SSOConstants.CLUSTERING_MESSAGE_ISRPC);
-            success = true;
+            isSuccess = true;
         } catch (ClusteringFault e) {
             log.error("Failed to send message " + message + ". Retry count at " + retryCount, e);
         }
-        return success;
+        return isSuccess;
     }
 }

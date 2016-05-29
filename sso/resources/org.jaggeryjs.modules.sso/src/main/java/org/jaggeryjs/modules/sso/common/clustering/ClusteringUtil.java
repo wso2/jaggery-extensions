@@ -36,27 +36,26 @@ public class ClusteringUtil {
      * Sends a cluster message to other members of the cluster.If message transmission fails it will
      * create a thread which will attempt retry transmission for a predefined amount of retry attempts.
      *
-     * @param message A message to be
+     * @param message The message to be transmitted
      */
     public static void sendClusterMessage(ClusteringMessage message) {
         ClusteringAgent agent = createClusteringAgent();
         if (agent == null) {
             log.error("Unable to send the clustering message as a clustering agent was not obtained.");
             if (log.isDebugEnabled()) {
-                log.debug(String.format("Failed to send cluster message :%s " ,message));
+                log.debug(String.format("Failed to send cluster message :%s ", message));
             }
             return;
         }
         try {
             agent.sendMessage(message, SSOConstants.CLUSTERING_MESSAGE_ISRPC);
-            if(log.isDebugEnabled()){
+            if (log.isDebugEnabled()) {
 
                 log.debug(String.format("Successfully transmitted cluster message :%s", message));
             }
         } catch (ClusteringFault e) {
             log.error("Unable to send the clustering message.The system will now attempt to retry " +
                     "sending the message", e);
-            //TODO: Review this section
             Thread th = new Thread(new FailedClusterMessageTransmitter(agent, message));
             th.start();
         }
@@ -65,7 +64,6 @@ public class ClusteringUtil {
     public static ClusteringAgent createClusteringAgent() {
         ClusteringAgent agent = null;
         try {
-            //TODO: Review this section
             PrivilegedCarbonContext privilegedCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
             ConfigurationContextService configContextSvc = (ConfigurationContextService) privilegedCarbonContext.
                     getOSGiService(Class.forName(SSOConstants.OSGI_SERVICE_CONFIGURATION_CONTEXT),

@@ -23,23 +23,23 @@ import org.jaggeryjs.modules.sso.common.constants.SSOConstants;
 import org.jaggeryjs.scriptengine.exceptions.ScriptException;
 
 /**
- * Maintains the issuer details against the relevant session
+ * Maintains the serviceProvider details against the relevant session
  */
-public class IssuerSession {
+public class ServiceProviderSession {
 
     private static final Log log = LogFactory.getLog(ClusteringUtil.class);
     private SessionHostObject session;
-    private String issuer;
+    private String serviceProvider;
     private String sessionId;
 
-    public IssuerSession(String issuer, SessionHostObject session) {
+    public ServiceProviderSession(String serviceProvider, SessionHostObject session) {
         this.session = session;
-        this.issuer = issuer;
-        this.sessionId = IssuerSession.getSessionId(session);
+        this.serviceProvider = serviceProvider;
+        this.sessionId = ServiceProviderSession.getSessionId(session);
     }
 
-    public String getIssuer() {
-        return issuer;
+    public String getServiceProvider() {
+        return serviceProvider;
     }
 
     public String getSessionId() {
@@ -48,7 +48,8 @@ public class IssuerSession {
 
     /**
      * A utility method to invoke the getId method of the provided SessionHostObject
-     * @param session  A SessionHostObject
+     *
+     * @param session A SessionHostObject
      * @return A unique String identifying the provided session
      */
     public static String getSessionId(SessionHostObject session) {
@@ -62,9 +63,10 @@ public class IssuerSession {
         return id;
     }
 
-    //TODO Add comment
+    /**
+     * Invalidates the session by calling the Session HostObjects invalidate method
+     */
     public void invalidate() {
-        //TODO: Check if the session has been already invalidated before attempting to invalidate
         Object[] args = new Object[0];
         try {
             SessionHostObject.jsFunction_invalidate(null, session, args, null);
@@ -75,6 +77,6 @@ public class IssuerSession {
     }
 
     public String toString() {
-        return String.format(SSOConstants.ISSUER_SESSION_DETAILS, sessionId, issuer);
+        return String.format(SSOConstants.ISSUER_SESSION_DETAILS, sessionId, serviceProvider);
     }
 }

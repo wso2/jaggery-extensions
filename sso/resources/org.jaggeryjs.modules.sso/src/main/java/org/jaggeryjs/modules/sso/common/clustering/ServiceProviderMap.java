@@ -21,14 +21,14 @@ package org.jaggeryjs.modules.sso.common.clustering;
 import java.util.HashMap;
 
 
-public class IssuerSessionMap extends HashMap<String, IssuerSession> {
+public class ServiceProviderMap extends HashMap<String, ServiceProviderSession> {
 
-    public IssuerSession getIssuerSession(String issuer) {
-        return this.get(issuer);
+    public ServiceProviderSession getServiceProviderSession(String serviceProvider) {
+        return this.get(serviceProvider);
     }
 
-    public void addIssuerSession(IssuerSession issuerSession) {
-        this.put(issuerSession.getIssuer(), issuerSession);
+    public void addServiceProviderSession(ServiceProviderSession serviceProviderSession) {
+        this.put(serviceProviderSession.getServiceProvider(), serviceProviderSession);
     }
 
 }

@@ -20,8 +20,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jaggeryjs.hostobjects.web.SessionHostObject;
 import org.jaggeryjs.modules.sso.common.clustering.ClusteringUtil;
-import org.jaggeryjs.modules.sso.common.clustering.IssuerSession;
-import org.jaggeryjs.modules.sso.common.clustering.IssuerSessionMap;
+import org.jaggeryjs.modules.sso.common.clustering.ServiceProviderMap;
+import org.jaggeryjs.modules.sso.common.clustering.ServiceProviderSession;
 import org.jaggeryjs.modules.sso.common.clustering.SessionInvalidateClusterMessage;
 
 import java.util.Map;
@@ -38,7 +38,7 @@ public class SSOSessionManager {
      * This map contains the idp session index mapped against the
      * sessions of applications which are SSOed together
      */
-    private static Map<String, IssuerSessionMap> sessionHostObjectMap;
+    private static Map<String, ServiceProviderMap> sessionHostObjectMap;
     private static Map<String, String> sessionToIDPIndexMap;
     //Eager instance creation to avoid concurrency issues
     private static SSOSessionManager instance = new SSOSessionManager();
@@ -59,13 +59,13 @@ public class SSOSessionManager {
      * @param idpSessionIndex The IDP session index provided in the SAML login response
      * @param session         A Session HostObject
      */
-    public void login(String idpSessionIndex, String issuer, SessionHostObject session) {
+    public void login(String idpSessionIndex, String serviceProvider, SessionHostObject session) {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Trying to register issuer:%s ", issuer));
+            log.debug(String.format("Trying to register Service Provider:%s ", serviceProvider));
         }
-        registerIssuerSessionWithIDPSessionIndex(idpSessionIndex, issuer, session);
+        registerServiceProviderSessionWithIDPSessionIndex(idpSessionIndex, serviceProvider, session);
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Finished registering issuer:%s ", issuer));
+            log.debug(String.format("Finished registering Service Provider:%s ", serviceProvider));
         }
     }
 
@@ -76,14 +76,14 @@ public class SSOSessionManager {
      *
      * @param idpSessionIndex A String key which is provided in the SAML login response indicating IDP session index
      */
-    public void logout(String idpSessionIndex, String issuer) {
+    public void logout(String idpSessionIndex, String serviceProvider) {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("trying to remove issuer:%s  using IDP Session Index", issuer));
+            log.debug(String.format("trying to remove issuer:%s  using IDP Session Index", serviceProvider));
         }
-        removeIssuerSession(idpSessionIndex, issuer);
+        removeServiceProviderSession(idpSessionIndex, serviceProvider);
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Finished removing issuer:%s using IDP Session Index ", issuer));
+            log.debug(String.format("Finished removing issuer:%s using IDP Session Index ", serviceProvider));
         }
     }
 
@@ -92,17 +92,17 @@ public class SSOSessionManager {
      *
      * @param session
      */
-    public void logout(SessionHostObject session, String issuer) {
+    public void logout(SessionHostObject session, String serviceProvider) {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Trying to remove issuer:%s using Session ", issuer));
+            log.debug(String.format("Trying to remove Service Provider:%s using Session ", serviceProvider));
         }
 
-        String sessionId = IssuerSession.getSessionId(session);
+        String sessionId = ServiceProviderSession.getSessionId(session);
         String idpSessionIndex = getIDPSessionIndex(sessionId);
-        removeIssuerSession(idpSessionIndex, issuer);
+        removeServiceProviderSession(idpSessionIndex, serviceProvider);
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Finished removing issuer:%s  using Session", issuer));
+            log.debug(String.format("Finished removing ServiceProvider:%s  using Session", serviceProvider));
         }
     }
 
@@ -112,26 +112,26 @@ public class SSOSessionManager {
      * the session invalidate method has been already called.
      *
      * @param session
-     * @param issuer
+     * @param serviceProvider
      */
-    public void cleanUp(SessionHostObject session, String issuer) {
+    public void cleanUp(SessionHostObject session, String serviceProvider) {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Cleaning up session details of issuer: %s ", issuer));
+            log.debug(String.format("Cleaning up session details of Service Provider: %s ", serviceProvider));
         }
-        String sessionId = IssuerSession.getSessionId(session);
+        String sessionId = ServiceProviderSession.getSessionId(session);
         String idpSessionIndex = getIDPSessionIndex(sessionId);
         if (idpSessionIndex == null) {
             log.warn(String.format("Unable to locate an IDP Session Index for the provided session:%s .Aborting" +
                     " clean up operations.", sessionId));
             return;
         }
-        IssuerSessionMap issuerMap = getIssuerSessionMap(idpSessionIndex);
-        cleanUpIssuerMap(issuerMap, issuer);
+        ServiceProviderMap issuerMap = getServiceProviderSessionMap(idpSessionIndex);
+        cleanUpSessionProviderMap(issuerMap, serviceProvider);
         cleanUpLocalSessionDetails(sessionId);
         cleanUpIDPSessionDetails(idpSessionIndex, issuerMap);
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Finished cleaning up session details of issuer :%s ", issuer));
+            log.debug(String.format("Finished cleaning up session details of Service Provider :%s ", serviceProvider));
         }
     }
 
@@ -146,8 +146,8 @@ public class SSOSessionManager {
      *
      * @param idpSessionIndex A String key which is provided in the SAML login response indicating IDP session index
      */
-    public void logoutClusteredNodes(String idpSessionIndex, String issuer) {
-        removeIssuerSessionInCluster(idpSessionIndex, issuer);
+    public void logoutClusteredNodes(String idpSessionIndex, String serviceProvider) {
+        removeServiceProviderSessionInCluster(idpSessionIndex, serviceProvider);
     }
 
     /**
@@ -159,15 +159,16 @@ public class SSOSessionManager {
      * @param idpSessionIndex A String key which is provided in the SAML login response  indicating IDP session index
      * @param session
      */
-    private void registerIssuerSessionWithIDPSessionIndex(String idpSessionIndex, String issuer, SessionHostObject session) {
-        IssuerSessionMap issuerSessionMap = getIssuerSessionMap(idpSessionIndex);
-        if (issuerSessionMap == null) {
-            issuerSessionMap = createIssuerSessionMap(idpSessionIndex);
+    private void registerServiceProviderSessionWithIDPSessionIndex(String idpSessionIndex, String serviceProvider,
+                                                                   SessionHostObject session) {
+        ServiceProviderMap serviceProviderSessionMap = getServiceProviderSessionMap(idpSessionIndex);
+        if (serviceProviderSessionMap == null) {
+            serviceProviderSessionMap = createServiceProviderSessionMap(idpSessionIndex);
         }
-        IssuerSession issuerSession = new IssuerSession(issuer, session);
-        addToIssuerSessionMap(issuerSession, issuerSessionMap);
+        ServiceProviderSession serviceProviderSession = new ServiceProviderSession(serviceProvider, session);
+        addToServiceProviderSessionMap(serviceProviderSession, serviceProviderSessionMap);
 
-        String localSessionId = issuerSession.getSessionId();
+        String localSessionId = serviceProviderSession.getSessionId();
         sessionToIDPIndexMap.put(localSessionId, idpSessionIndex);
 
         if (log.isDebugEnabled()) {
@@ -183,7 +184,7 @@ public class SSOSessionManager {
      *
      * @param idpSessionIndex A String key which is provided in the SAML login response  indicating IDP session index
      */
-    private void removeIssuerSessionInCluster(String idpSessionIndex, String issuer) {
+    private void removeServiceProviderSessionInCluster(String idpSessionIndex, String serviceProvider) {
         //If the IDP session index does not exist then attempt to notify
         //the other members of the cluster
         if (!sessionHostObjectMap.containsKey(idpSessionIndex)) {
@@ -192,7 +193,7 @@ public class SSOSessionManager {
             //contain any sessions
             return;
         }
-        cleanUpSessionsDetails(idpSessionIndex, issuer);
+        cleanUpSessionsDetails(idpSessionIndex, serviceProvider);
     }
 
     /**
@@ -201,14 +202,14 @@ public class SSOSessionManager {
      *
      * @param idpSessionIndex A String key which is provided in the SAML login response  indicating IDP session index
      */
-    private void removeIssuerSession(String idpSessionIndex, String issuer) {
+    private void removeServiceProviderSession(String idpSessionIndex, String serviceProvider) {
         if (!sessionHostObjectMap.containsKey(idpSessionIndex)) {
-            notifyClusterToInvalidateSession(idpSessionIndex, issuer);
+            notifyClusterToInvalidateSession(idpSessionIndex, serviceProvider);
             //There is nothing else to do as the idpSessionIndex does not
             //contain any sessions
             return;
         }
-        cleanUpSessionsDetails(idpSessionIndex, issuer);
+        cleanUpSessionsDetails(idpSessionIndex, serviceProvider);
     }
 
     /**
@@ -217,10 +218,10 @@ public class SSOSessionManager {
      *
      * @param idpSessionIndex A String key which is provided in the SAML login response  indicating IDP session index
      */
-    private void cleanUpSessionsDetails(String idpSessionIndex, String issuer) {
-        IssuerSessionMap issuerMap = getIssuerSessionMap(idpSessionIndex);
-        invalidateIssuerSession(issuerMap, issuer);
-        cleanUpIDPSessionDetails(idpSessionIndex, issuerMap);
+    private void cleanUpSessionsDetails(String idpSessionIndex, String serviceProvider) {
+        ServiceProviderMap serviceProviderMap = getServiceProviderSessionMap(idpSessionIndex);
+        invalidateServiceProviderSession(serviceProviderMap, serviceProvider);
+        cleanUpIDPSessionDetails(idpSessionIndex, serviceProviderMap);
     }
 
     /**
@@ -228,13 +229,13 @@ public class SSOSessionManager {
      *
      * @param idpSessionIndex A String key which is provided in the SAML login response  indicating IDP session index
      */
-    private void cleanUpIDPSessionDetails(String idpSessionIndex, IssuerSessionMap issuerMap) {
+    private void cleanUpIDPSessionDetails(String idpSessionIndex, ServiceProviderMap serviceProviderMap) {
         if (!sessionHostObjectMap.containsKey(idpSessionIndex)) {
             return;
         }
 
         //We can only remove the idpSessionIndex if there are no valid sessions
-        if (issuerMap.isEmpty()) {
+        if (serviceProviderMap.isEmpty()) {
             sessionHostObjectMap.remove(idpSessionIndex);
 
             if (log.isDebugEnabled()) {
@@ -262,22 +263,22 @@ public class SSOSessionManager {
         }
     }
 
-    private void cleanUpIssuerMap(IssuerSessionMap issuerMap, String issuer) {
-        if (!issuerMap.containsKey(issuer)) {
+    private void cleanUpSessionProviderMap(ServiceProviderMap serviceProviderMap, String serviceProvider) {
+        if (!serviceProviderMap.containsKey(serviceProvider)) {
             return;
         }
-        issuerMap.remove(issuer);
+        serviceProviderMap.remove(serviceProvider);
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Removed issuer:%s ", issuer));
+            log.debug(String.format("Removed issuer:%s ", serviceProvider));
         }
     }
 
-    private void invalidateIssuerSession(IssuerSessionMap issuerMap, String issuer) {
-        if (!issuerMap.containsKey(issuer)) {
+    private void invalidateServiceProviderSession(ServiceProviderMap serviceProviderMap, String serviceProvider) {
+        if (!serviceProviderMap.containsKey(serviceProvider)) {
             return;
         }
 
-        IssuerSession issuerSession = issuerMap.getIssuerSession(issuer);
+        ServiceProviderSession issuerSession = serviceProviderMap.getServiceProviderSession(serviceProvider);
         String sessionId = issuerSession.getSessionId();
         issuerSession.invalidate();
 
@@ -285,46 +286,37 @@ public class SSOSessionManager {
             log.debug(String.format("Invalidated the issuer session :%s ", issuerSession));
         }
 
-        cleanUpIssuerMap(issuerMap, issuer);
+        cleanUpSessionProviderMap(serviceProviderMap, serviceProvider);
         cleanUpLocalSessionDetails(sessionId);
     }
 
-    private IssuerSessionMap getIssuerSessionMap(String idpSessionIndex) {
+    private ServiceProviderMap getServiceProviderSessionMap(String idpSessionIndex) {
         return sessionHostObjectMap.get(idpSessionIndex);
     }
 
-    //TODO: Review this method (Should we synch this?)
-    private IssuerSessionMap createIssuerSessionMap(String idpSessionIndex) {
+    private ServiceProviderMap createServiceProviderSessionMap(String idpSessionIndex) {
         //Check if a session set exists
-        IssuerSessionMap issuerMap = new IssuerSessionMap();
-        sessionHostObjectMap.put(idpSessionIndex, issuerMap);
+        ServiceProviderMap serviceProviderMap = new ServiceProviderMap();
+        sessionHostObjectMap.put(idpSessionIndex, serviceProviderMap);
         if (log.isDebugEnabled()) {
             log.debug(String.format("Registered new issuer map for IDP Session Index:%s ", idpSessionIndex));
         }
-        return issuerMap;
+        return serviceProviderMap;
     }
 
-    //TODO: Review this method (Should we synch this?)
-    private void addToIssuerSessionMap(IssuerSession issuerSession, IssuerSessionMap map) {
-        map.addIssuerSession(issuerSession);
+    private void addToServiceProviderSessionMap(ServiceProviderSession serviceProviderSession, ServiceProviderMap map) {
+        map.addServiceProviderSession(serviceProviderSession);
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Registered issuer against Session: %s", issuerSession));
+            log.debug(String.format("Registered issuer against Session: %s", serviceProviderSession));
         }
     }
 
-    /**
-     * Maps the local session ID to a IDP session index
-     *
-     * @param sessionId
-     * @return
-     */
     private String getIDPSessionIndex(String sessionId) {
-        //TODO:Add return description and a description for sessionId
         return sessionToIDPIndexMap.get(sessionId);
     }
 
-    private void notifyClusterToInvalidateSession(String idpSessionIndex, String issuer) {
-        SessionInvalidateClusterMessage message = new SessionInvalidateClusterMessage(idpSessionIndex, issuer);
+    private void notifyClusterToInvalidateSession(String idpSessionIndex, String serviceProvider) {
+        SessionInvalidateClusterMessage message = new SessionInvalidateClusterMessage(idpSessionIndex, serviceProvider);
         if (log.isDebugEnabled()) {
             log.debug(String.format("Sending cluster message: %s ", message));
         }
