@@ -123,6 +123,19 @@
         }
         return args[index];
     };
+    /**
+     * Determines the arguments list provided for a transition input UI when changing state
+     * @param  {arguments} args     Arguments array of a function
+     * @param  {Object} artifact Asset instance
+     * @param  {Number} index    The index of the arguments array at which the arguments may be found
+     * @return {Object}          If an argument object is provided it is returned else an empty object is returned
+     */
+    var resolveLCArgs = function(args,artifact,index) {
+        if((args.length -1) <= index) {
+            return args[index];
+        }
+        return null;
+    };
     var ArtifactManager = function (registry, type) {
         this.registry = registry;
         this.manager = new GenericArtifactManager(registry.registry.getChrootedRegistry("/_system/governance"), type);
@@ -359,10 +372,16 @@
         }
         //checkListItems = artifact.getAllCheckListItemNames();
 	    var lifecycleName = resolveLCName(arguments,artifact,2);//getLifecycleName(artifact);
+        var args = resolveLCArgs(arguments, artifact,3);
 
         try {
-            //artifact.invokeAction(state,lifecycleName);
-            this.registry.invokeAspect(options.path,lifecycleName,state,{});
+            
+            if(args) {
+                this.registry.invokeAspect(options.path,lifecycleName,state,args);
+            } else {
+                this.registry.invokeAspect(options.path,lifecycleName,state,{});
+                //this.registry['invokeAspect(java.lang.String,java.lang.String,java.lang.String)'](options.path,lifecycleName,state);
+            }
 
         } catch (e) {
             if (log.isDebugEnabled()) {
