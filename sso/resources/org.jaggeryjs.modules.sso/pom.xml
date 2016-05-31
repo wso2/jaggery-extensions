@@ -80,6 +80,11 @@
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jaggeryjs</groupId>
+            <artifactId>org.jaggeryjs.hostobjects.web</artifactId>
+            <version>${jaggery.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
