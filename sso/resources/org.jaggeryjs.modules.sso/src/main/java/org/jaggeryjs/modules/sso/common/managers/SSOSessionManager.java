@@ -78,12 +78,12 @@ public class SSOSessionManager {
      */
     public void logout(String idpSessionIndex, String serviceProvider) {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("trying to remove issuer:%s  using IDP Session Index", serviceProvider));
+            log.debug(String.format("Trying to remove Service Provider:%s  using IDP Session Index", serviceProvider));
         }
         removeServiceProviderSession(idpSessionIndex, serviceProvider);
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Finished removing issuer:%s using IDP Session Index ", serviceProvider));
+            log.debug(String.format("Finished removing Service Provider:%s using IDP Session Index ", serviceProvider));
         }
     }
 
@@ -107,7 +107,7 @@ public class SSOSessionManager {
     }
 
     /**
-     * Removes issuer, session and IDP index details.This method should be called from a session destroy
+     * Removes the Service Provider session and IDP index details.This method should be called from a session destroy
      * listener.Please note that this method will not attempt to invalidate the session and will assume that
      * the session invalidate method has been already called.
      *
@@ -125,10 +125,10 @@ public class SSOSessionManager {
                     " clean up operations.", sessionId));
             return;
         }
-        ServiceProviderMap issuerMap = getServiceProviderSessionMap(idpSessionIndex);
-        cleanUpSessionProviderMap(issuerMap, serviceProvider);
+        ServiceProviderMap serviceProviderMap = getServiceProviderSessionMap(idpSessionIndex);
+        cleanUpSessionProviderMap(serviceProviderMap, serviceProvider);
         cleanUpLocalSessionDetails(sessionId);
-        cleanUpIDPSessionDetails(idpSessionIndex, issuerMap);
+        cleanUpIDPSessionDetails(idpSessionIndex, serviceProviderMap);
 
         if (log.isDebugEnabled()) {
             log.debug(String.format("Finished cleaning up session details of Service Provider :%s ", serviceProvider));
@@ -226,10 +226,11 @@ public class SSOSessionManager {
 
     /**
      * Removes the IDP session index to session mappings
-     *
+     * Note: This method needs to be synched as the service providers maybe removed from multiple applications at the
+     * same time.
      * @param idpSessionIndex A String key which is provided in the SAML login response  indicating IDP session index
      */
-    private void cleanUpIDPSessionDetails(String idpSessionIndex, ServiceProviderMap serviceProviderMap) {
+    private synchronized void cleanUpIDPSessionDetails(String idpSessionIndex, ServiceProviderMap serviceProviderMap) {
         if (!sessionHostObjectMap.containsKey(idpSessionIndex)) {
             return;
         }
@@ -241,7 +242,7 @@ public class SSOSessionManager {
             if (log.isDebugEnabled()) {
 
                 log.debug(String.format("Removed IDP Session Index %s since there  " +
-                        "were no issuers", idpSessionIndex));
+                        "were no Service Providers", idpSessionIndex));
             }
         }
     }
@@ -259,7 +260,7 @@ public class SSOSessionManager {
 
         if (log.isDebugEnabled()) {
 
-            log.debug(String.format("Removed issuer's Session Id:%s ", sessionId));
+            log.debug(String.format("Removed Service Provider's Session Id:%s ", sessionId));
         }
     }
 
@@ -269,7 +270,7 @@ public class SSOSessionManager {
         }
         serviceProviderMap.remove(serviceProvider);
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Removed issuer:%s ", serviceProvider));
+            log.debug(String.format("Removed Service Provider:%s ", serviceProvider));
         }
     }
 
@@ -278,12 +279,12 @@ public class SSOSessionManager {
             return;
         }
 
-        ServiceProviderSession issuerSession = serviceProviderMap.getServiceProviderSession(serviceProvider);
-        String sessionId = issuerSession.getSessionId();
-        issuerSession.invalidate();
+        ServiceProviderSession serviceProviderSession = serviceProviderMap.getServiceProviderSession(serviceProvider);
+        String sessionId = serviceProviderSession.getSessionId();
+        serviceProviderSession.invalidate();
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Invalidated the issuer session :%s ", issuerSession));
+            log.debug(String.format("Invalidated the Service Provider session :%s ", serviceProviderSession));
         }
 
         cleanUpSessionProviderMap(serviceProviderMap, serviceProvider);
@@ -299,7 +300,7 @@ public class SSOSessionManager {
         ServiceProviderMap serviceProviderMap = new ServiceProviderMap();
         sessionHostObjectMap.put(idpSessionIndex, serviceProviderMap);
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Registered new issuer map for IDP Session Index:%s ", idpSessionIndex));
+            log.debug(String.format("Registered new Service Provider map for IDP Session Index:%s ", idpSessionIndex));
         }
         return serviceProviderMap;
     }
@@ -307,7 +308,7 @@ public class SSOSessionManager {
     private void addToServiceProviderSessionMap(ServiceProviderSession serviceProviderSession, ServiceProviderMap map) {
         map.addServiceProviderSession(serviceProviderSession);
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Registered issuer against Session: %s", serviceProviderSession));
+            log.debug(String.format("Registered Service Provider against Session: %s", serviceProviderSession));
         }
     }
 
