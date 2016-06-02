@@ -105,11 +105,28 @@
     UserManager.prototype.removeRole = function (role) {
         this.manager.deleteRole(role);
     };
+    
+    UserManager.prototype.getAdminRoleName = function () {
+        return this.manager.getRealmConfiguration().getAdminRoleName();
+    };
 
+    UserManager.prototype.getAdminUserName = function () {
+        return this.manager.getRealmConfiguration().getAdminUserName();
+    };
+    
     UserManager.prototype.allRoles = function () {
         return this.manager.getRoleNames();
     };
-	UserManager.prototype.getUserListOfRole = function (role) {
+
+    UserManager.prototype.searchRoles = function (filter, maxLimit, noInternalRole, noSystemRole, noSharedRole) {
+        return this.manager.getRoleNames(filter, maxLimit, noInternalRole, noSystemRole, noSharedRole);
+    };
+
+    UserManager.prototype.getMaxLimit = function (type){
+        return this.manager.getMaxListCount(type);
+    };
+    
+    UserManager.prototype.getUserListOfRole = function (role) {
         return this.manager.getUserListOfRole(role);
     };
     /**

@@ -665,6 +665,7 @@ Handlebars.SafeString.prototype.toString = function() {
       }
 
       if(!possible.test(string)) { return string; }
+      if(typeof string === 'object') { string = String(string); }
       return string.replace(badChars, escapeChar);
     },
 

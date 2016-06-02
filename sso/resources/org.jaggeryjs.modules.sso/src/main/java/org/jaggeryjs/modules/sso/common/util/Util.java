@@ -20,7 +20,10 @@ package org.jaggeryjs.modules.sso.common.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xerces.util.SecurityManager;
+import org.apache.xerces.impl.Constants;
 import org.opensaml.Configuration;
+import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.ConfigurationException;
@@ -47,20 +50,15 @@ import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.security.KeyStore;
-import java.util.Random;
-import java.util.zip.*;
+import java.security.NoSuchAlgorithmException;
 
 public class Util {
 
+    private static final int ENTITY_EXPANSION_LIMIT = 0;
     private static boolean bootStrapped = false;
-
-    private static Random random = new Random();
-
-    private static final char[] charMapping = {
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
-            'p'};
 
     private static Log log = LogFactory.getLog(Util.class);
 
@@ -100,19 +98,13 @@ public class Util {
      */
     public static String createID() {
 
-        byte[] bytes = new byte[20]; // 160 bits
-        random.nextBytes(bytes);
-
-        char[] chars = new char[40];
-
-        for (int i = 0; i < bytes.length; i++) {
-            int left = (bytes[i] >> 4) & 0x0f;
-            int right = bytes[i] & 0x0f;
-            chars[i * 2] = charMapping[left];
-            chars[i * 2 + 1] = charMapping[right];
+        try {
+            SecureRandomIdentifierGenerator generator = new SecureRandomIdentifierGenerator();
+            return generator.generateIdentifier();
+        } catch (NoSuchAlgorithmException e) {
+            log.warn("Error while building Secure Random ID");
         }
-
-        return String.valueOf(chars);
+        return null;
     }
 
     /**
@@ -125,8 +117,7 @@ public class Util {
     public static XMLObject unmarshall(String authReqStr) throws Exception {
         try {
             doBootstrap();
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            documentBuilderFactory.setNamespaceAware(true);
+            DocumentBuilderFactory documentBuilderFactory = getSecuredDocumentBuilder();
             DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
             Document document = docBuilder.parse(new ByteArrayInputStream(authReqStr.trim().getBytes()));
             Element element = document.getDocumentElement();
@@ -315,6 +306,34 @@ public class Util {
     private static String generateKSNameFromDomainName(String tenantDomain) {
         String ksName = tenantDomain.trim().replace(".", "-");
         return (ksName + ".jks");
+    }
+
+    /**
+     * Create DocumentBuilderFactory with the XXE prevention measurements
+     *
+     * @return DocumentBuilderFactory instance
+     */
+    public static DocumentBuilderFactory getSecuredDocumentBuilder() {
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        dbf.setXIncludeAware(false);
+        dbf.setExpandEntityReferences(false);
+        try {
+            dbf.setFeature(Constants.SAX_FEATURE_PREFIX + Constants.EXTERNAL_GENERAL_ENTITIES_FEATURE, false);
+            dbf.setFeature(Constants.SAX_FEATURE_PREFIX + Constants.EXTERNAL_PARAMETER_ENTITIES_FEATURE, false);
+            dbf.setFeature(Constants.XERCES_FEATURE_PREFIX + Constants.LOAD_EXTERNAL_DTD_FEATURE, false);
+        } catch (ParserConfigurationException e) {
+            log.error(
+                    "Failed to load XML Processor Feature " + Constants.EXTERNAL_GENERAL_ENTITIES_FEATURE + " or " +
+                            Constants.EXTERNAL_PARAMETER_ENTITIES_FEATURE + " or " + Constants.LOAD_EXTERNAL_DTD_FEATURE);
+        }
+
+        SecurityManager securityManager = new SecurityManager();
+        securityManager.setEntityExpansionLimit(ENTITY_EXPANSION_LIMIT);
+        dbf.setAttribute(Constants.XERCES_PROPERTY_PREFIX + Constants.SECURITY_MANAGER_PROPERTY, securityManager);
+
+        return dbf;
     }
 
 }

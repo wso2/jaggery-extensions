@@ -72,9 +72,15 @@ var registry = registry || {};
 
     var children = function (registry, resource, paging) {
         var resources = resource.getChildren();
+
         //we have to manually sort this due to the bug in registry.getChildren() (#1 above)
         //resources.sort(resourceSorter(paging.sort));
-        return resources.slice(paging.start, paging.start + paging.count);
+
+        if (paging.count > -1) {
+            return resources.slice(paging.start, paging.start + paging.count);
+        }
+
+        return resources;
     };
 
     var resource = function (registry, resource) {
@@ -264,6 +270,10 @@ var registry = registry || {};
         return this.registry.resourceExists(path);
     };
 
+    Registry.prototype.invokeAspect = function (path, aspectName, action, parameters) {
+        this.registry.invokeAspect(path, aspectName, action, parameters);
+    };
+
     Registry.prototype.content = function (path, paging) {
         if (!this.exists(path)) {
             return null;
@@ -271,7 +281,7 @@ var registry = registry || {};
         var resource = this.registry.get(path);
         paging = merge({
             start: 0,
-            count: 10,
+            count: -1,
             sort: 'recent'
         }, paging);
         return content(this, resource, paging);
@@ -405,6 +415,9 @@ var registry = registry || {};
         this.registry.rateResource(path, rating);
     };
 
+    Registry.prototype.invokeAspect = function (path, aspectName, action, parameters) {
+        this.registry.invokeAspect(path, aspectName, action, parameters);
+    }
     Registry.prototype.unrate = function (path) {
         this.registry.rateResource(path, 0);
     };

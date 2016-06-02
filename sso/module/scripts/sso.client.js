@@ -29,6 +29,7 @@ var client = {};
     var Util = Packages.org.jaggeryjs.modules.sso.common.util.Util,
         carbon = require('carbon'),
         log = new Log();
+    var SSOSessionManager = Packages.org.jaggeryjs.modules.sso.common.managers.SSOSessionManager;
 
     /**
      * obtains an encoded saml response and return a decoded/unmarshalled saml obj
@@ -51,6 +52,8 @@ var client = {};
         }else{
             tDomain = Util.getDomainName(samlObj);
             tId = carbon.server.tenantId({domain: tDomain});
+            var identityTenantUtil = Packages.org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+            identityTenantUtil.initializeRegistry(tId,tDomain);
         }
         return Util.validateSignature(samlObj,
             config.KEY_STORE_NAME, config.KEY_STORE_PASSWORD, config.IDP_ALIAS, tId, tDomain);
@@ -148,5 +151,38 @@ var client = {};
         return sessionIndex;
 
     };
+
+
+    /**
+     * Registers the provided Session HostObject against the IDP session index.This
+     * mapping is used to Single Logout all sessions when the logout method is called
+     * @param  {String} idpSessionIndex The IDP session index provided in the SAML login response
+     * @param  {String} serviceProvider 
+     * @param  {Object} session         
+     */
+    client.login = function(idpSessionIndex,serviceProvider,session){
+        SSOSessionManager.getInstance().login(idpSessionIndex,serviceProvider,session);
+    };
+
+    /**
+     * Handles the Single Logout operation by invalidating the sessions mapped
+     * to the provided IDP session index.
+     * @param  {Object} indicator       Either a String representing the IDP session index or a session  object
+     * @param  {String} serviceProvider 
+     */
+    client.logout = function(indicator,serviceProvider) {
+        SSOSessionManager.getInstance().logout(indicator,serviceProvider);
+    };
+
+    /**
+     * Removes issuer, session and IDP index details.This method should be called from a session destroy
+     * listener.Please note that this method will not attempt to invalidate the session and will assume that
+     * the session invalidate method has been already called
+     * @param  {Object} indicator       Either a String representing the IDP session index or a session  object
+     * @param  {String} serviceProvider  
+     */
+    client.cleanUp = function(indicator,serviceProvider){
+        SSOSessionManager.getInstance().cleanUp(indicator,serviceProvider);
+    }
 
 }(client));

@@ -24,7 +24,7 @@
     var HISTORY_PATH_SEPERATOR = '_';
     var ASSET_PATH_SEPERATOR = '/';
     var lcHistoryRegExpression = new RegExp(ASSET_PATH_SEPERATOR, 'g');
-    var HISTORY_PATH = '/_system/governance/_system/governance/repository/components/org.wso2.carbon.governance/lifecycles/history/';
+    var HISTORY_PATH = '/_system/governance/repository/components/org.wso2.carbon.governance/lifecycles/history/';
 
 
     var buildArtifact = function (manager, artifact) {
@@ -47,7 +47,10 @@
 
                     //Check if there is only one element
                     if (data.length == 1) {
-                        attributes[name] = String(artifact.getAttribute(name));
+                        //Make sure the attribute has a value
+                        if(artifact.getAttribute(name)!=null){
+                            attributes[name] = String(artifact.getAttribute(name));
+                        }
                     }
                     else {
                         attributes[name] = data;
@@ -62,9 +65,15 @@
     };
 
     var createArtifact = function (manager, options) {
-        var name, attribute, i, length, lc,
-            artifact = manager.newGovernanceArtifact(new QName(options.name)),
+        var name, attribute, i, length, lc, artifact,
             attributes = options.attributes;
+
+        if(options.namespaceAttribute && attributes[options.namespaceAttribute]) {
+            artifact = manager.newGovernanceArtifact(new QName(attributes[options.namespaceAttribute], options.name))
+        } else {
+            artifact = manager.newGovernanceArtifact(new QName(options.name))
+        }
+
         for (name in attributes) {
             if (attributes.hasOwnProperty(name)) {
                 attribute = attributes[name];
@@ -113,6 +122,19 @@
             return lc;
         }
         return args[index];
+    };
+    /**
+     * Determines the arguments list provided for a transition input UI when changing state
+     * @param  {arguments} args     Arguments array of a function
+     * @param  {Object} artifact Asset instance
+     * @param  {Number} index    The index of the arguments array at which the arguments may be found
+     * @return {Object}          If an argument object is provided it is returned else an empty object is returned
+     */
+    var resolveLCArgs = function(args,artifact,index) {
+        if((args.length -1) <= index) {
+            return args[index];
+        }
+        return null;
     };
     var ArtifactManager = function (registry, type) {
         this.registry = registry;
@@ -242,7 +264,10 @@
     }
 
     ArtifactManager.prototype.get = function (id) {
-        return buildArtifact(this, this.manager.getGenericArtifact(id))
+        var artifact = this.manager.getGenericArtifact(id);
+        //An asset may not be returned in some scenarios (e.g. a user does not have access
+        //to the asset)
+        return artifact ? buildArtifact(this,artifact) : null;
     };
 
     ArtifactManager.prototype.count = function () {
@@ -347,7 +372,23 @@
         }
         //checkListItems = artifact.getAllCheckListItemNames();
 	    var lifecycleName = resolveLCName(arguments,artifact,2);//getLifecycleName(artifact);
-        artifact.invokeAction(state,lifecycleName);
+        var args = resolveLCArgs(arguments, artifact,3);
+
+        try {
+            
+            if(args) {
+                this.registry.invokeAspect(options.path,lifecycleName,state,args);
+            } else {
+                this.registry.invokeAspect(options.path,lifecycleName,state,{});
+                //this.registry['invokeAspect(java.lang.String,java.lang.String,java.lang.String)'](options.path,lifecycleName,state);
+            }
+
+        } catch (e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
+            throw e;
+        }
     };
     /*
      Gets the current lifecycle state
@@ -398,7 +439,7 @@
                 +'Please make sure that a valid id is provided and the asset manager is of the same type as the asset.');
             return lcs;
         }
-        var availableLifecycles = artifact.getLifecycleNames(); 
+        var availableLifecycles = artifact.getLifecycleNames();
         //The returned object is a Java String array so must be converted
         for(var index = 0 ; index< availableLifecycles.length; index++){
             lcs.push(String(availableLifecycles[index]));
@@ -607,7 +648,7 @@
             'count': 12,
             'sortOrder': 'ASC',
             'sortBy': 'overview_name',
-            'paginationLimit': 2147483647
+            'paginationLimit': 30
         };
 
         if (!pagin) {
