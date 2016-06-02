@@ -79,7 +79,7 @@ var client = {};
     client.getEncodedSAMLAuthRequest = function (issuerId) {
         return Util.encode(
             Util.marshall(
-                new Packages.org.jaggeryjs.modules.sso.common.builders.AuthReqBuilder().buildAuthenticationRequest(issuerId);
+                new Packages.org.jaggeryjs.modules.sso.common.builders.AuthReqBuilder().buildAuthenticationRequest(issuerId)
             ));
     };
 
@@ -90,7 +90,7 @@ var client = {};
         return Util.encode(
             Util.marshall(
                 new Packages.org.jaggeryjs.modules.sso.common.builders.AuthReqBuilder().buildAuthenticationRequest(issuerId, destination, acsUrl,
-                    isPassive, tenantId, tenantDomain, nameIdPolicy);
+                    isPassive, tenantId, tenantDomain, nameIdPolicy)
             ));
     };
 
