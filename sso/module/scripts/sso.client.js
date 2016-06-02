@@ -79,7 +79,18 @@ var client = {};
     client.getEncodedSAMLAuthRequest = function (issuerId) {
         return Util.encode(
             Util.marshall(
-                new Packages.org.jaggeryjs.modules.sso.common.builders.AuthReqBuilder().buildAuthenticationRequest(issuerId)
+                new Packages.org.jaggeryjs.modules.sso.common.builders.AuthReqBuilder().buildAuthenticationRequest(issuerId);
+            ));
+    };
+
+    /**
+     * getting url encoded signed saml authentication request
+     */
+    client.getEncodedSignedSAMLAuthRequest = function (issuerId, destination, acsUrl, isPassive, tenantId, tenantDomain, nameIdPolicy) {
+        return Util.encode(
+            Util.marshall(
+                new Packages.org.jaggeryjs.modules.sso.common.builders.AuthReqBuilder().buildAuthenticationRequest(issuerId, destination, acsUrl,
+                    isPassive, tenantId, tenantDomain, nameIdPolicy);
             ));
     };
 
@@ -92,6 +103,18 @@ var client = {};
                 new Packages.org.jaggeryjs.modules.sso.common.builders.LogoutRequestBuilder().buildLogoutRequest(user, sessionIndex,
                     Packages.org.jaggeryjs.modules.sso.common.constants.SSOConstants.LOGOUT_USER,
                     issuerId)));
+    };
+
+    /**
+     * get url encoded signed saml logout request
+     */
+    client.getEncodedSignedSAMLLogoutRequest = function (user, sessionIndex, issuerId, tenantId, tenantDomain, destination, nameIdFormat) {
+        return Util.encode(
+            Util.marshall(
+                new Packages.org.jaggeryjs.modules.sso.common.builders.LogoutRequestBuilder().buildLogoutRequest(user, sessionIndex,
+                     Packages.org.jaggeryjs.modules.sso.common.constants.SSOConstants.LOGOUT_USER,
+                     issuerId, tenantId, tenantDomain, destination, nameIdFormat)));
+
     };
 
     /**
@@ -157,8 +180,8 @@ var client = {};
      * Registers the provided Session HostObject against the IDP session index.This
      * mapping is used to Single Logout all sessions when the logout method is called
      * @param  {String} idpSessionIndex The IDP session index provided in the SAML login response
-     * @param  {String} serviceProvider 
-     * @param  {Object} session         
+     * @param  {String} serviceProvider
+     * @param  {Object} session
      */
     client.login = function(idpSessionIndex,serviceProvider,session){
         SSOSessionManager.getInstance().login(idpSessionIndex,serviceProvider,session);
@@ -168,7 +191,7 @@ var client = {};
      * Handles the Single Logout operation by invalidating the sessions mapped
      * to the provided IDP session index.
      * @param  {Object} indicator       Either a String representing the IDP session index or a session  object
-     * @param  {String} serviceProvider 
+     * @param  {String} serviceProvider
      */
     client.logout = function(indicator,serviceProvider) {
         SSOSessionManager.getInstance().logout(indicator,serviceProvider);
@@ -179,7 +202,7 @@ var client = {};
      * listener.Please note that this method will not attempt to invalidate the session and will assume that
      * the session invalidate method has been already called
      * @param  {Object} indicator       Either a String representing the IDP session index or a session  object
-     * @param  {String} serviceProvider  
+     * @param  {String} serviceProvider
      */
     client.cleanUp = function(indicator,serviceProvider){
         SSOSessionManager.getInstance().cleanUp(indicator,serviceProvider);
