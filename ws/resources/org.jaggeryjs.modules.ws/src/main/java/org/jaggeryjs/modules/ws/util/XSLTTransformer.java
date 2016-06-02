@@ -14,6 +14,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
@@ -78,6 +79,7 @@ public class XSLTTransformer {
     public static InputStream getWSDL2(InputStream wsdl1InStream, Map paramMap) throws TransformerException, ParserConfigurationException {
         InputStream wsdl10to20xslt =
                 XSLTTransformer.class.getClassLoader().getResourceAsStream(WSDL10TO20_XSL_LOCATION);
+        InputStream wsdlIS;
 
         Source wsdl10Source = new StreamSource(wsdl1InStream);
 
@@ -86,18 +88,27 @@ public class XSLTTransformer {
         Result resultWSDL20 = new DOMResult(docWSDL);
 
         Source wsdlXSLSource = new StreamSource(wsdl10to20xslt);
-        transform(wsdl10Source, wsdlXSLSource, resultWSDL20, paramMap, new URIResolver() {
-            public Source resolve(String href, String base) {
-                InputStream is = XSLTTransformer.class.getResourceAsStream(href);
-                return new StreamSource(is);
-            }
-        });
+        try {
+            transform(wsdl10Source, wsdlXSLSource, resultWSDL20, paramMap, new URIResolver() {
+                public Source resolve(String href, String base) {
+                    InputStream is = XSLTTransformer.class.getResourceAsStream(href);
+                    return new StreamSource(is);
+                }
+            });
 
-        ByteArrayOutputStream wsdl20OutputStream = new ByteArrayOutputStream();
-        Source xmlSource = new DOMSource(docWSDL);
-        Result outputTarget = new StreamResult(wsdl20OutputStream);
-        TransformerFactory.newInstance().newTransformer().transform(xmlSource, outputTarget);
-        InputStream wsdlIS = new ByteArrayInputStream(wsdl20OutputStream.toByteArray());
+            ByteArrayOutputStream wsdl20OutputStream = new ByteArrayOutputStream();
+            Source xmlSource = new DOMSource(docWSDL);
+            Result outputTarget = new StreamResult(wsdl20OutputStream);
+            TransformerFactory.newInstance().newTransformer().transform(xmlSource, outputTarget);
+            wsdlIS = new ByteArrayInputStream(wsdl20OutputStream.toByteArray());
+
+        } finally {
+            try {
+                wsdl10to20xslt.close();
+            } catch (IOException ignore) {
+                log.error("Unable to close the XSLT used to transform WSDL 1.1 to 2.0", ignore);
+            }
+        }
 
         return wsdlIS;
     }
