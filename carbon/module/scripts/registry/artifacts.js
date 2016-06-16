@@ -28,12 +28,17 @@
 
 
     var buildArtifact = function (manager, artifact) {
+
+        var currentLCStateDurationObject = artifact.getCurrentStateDuration(String(artifact.getPath()), artifact.getLifecycleName());
+
         return {
             id: String(artifact.id),
             type: String(manager.type),
             path: "/_system/governance" + String(artifact.getPath()),
             lifecycle: artifact.getLifecycleName(),
             lifecycleState: artifact.getLifecycleState(),
+            currentLCStateDuration: currentLCStateDurationObject.get('currentStateDuration'),
+            currentLCStateDurationColour: currentLCStateDurationObject.get('durationColour'),
             mediaType: String(artifact.getMediaType()),
             attributes: (function () {
                 var i, name,
@@ -375,7 +380,7 @@
         var args = resolveLCArgs(arguments, artifact,3);
 
         try {
-            
+
             if(args) {
                 this.registry.invokeAspect(options.path,lifecycleName,state,args);
             } else {
