@@ -20,12 +20,18 @@ package org.jaggeryjs.modules.sso.common.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringUtils;
 import org.apache.xerces.util.SecurityManager;
 import org.apache.xerces.impl.Constants;
+import org.jaggeryjs.modules.sso.common.constants.SSOConstants;
 import org.opensaml.Configuration;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.DefaultBootstrap;
+import org.opensaml.saml2.core.NameID;
+import org.opensaml.saml2.core.NameIDPolicy;
 import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.impl.NameIDBuilder;
+import org.opensaml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml2.core.impl.StatusResponseTypeImpl;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObject;
@@ -52,9 +58,12 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import java.io.*;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Util {
 
@@ -336,5 +345,60 @@ public class Util {
 
         return dbf;
     }
+    
+    /** Build NameIDPolicy object given name ID policy format
+    *
+    * @param nameIdPolicy Name ID policy format
+    * @return SAML NameIDPolicy object
+    */
+   public static NameIDPolicy buildNameIDPolicy(String nameIdPolicy) {
+       NameIDPolicy nameIDPolicyObj = new NameIDPolicyBuilder().buildObject();
+       if (!StringUtils.isEmpty(nameIdPolicy)) {
+           nameIDPolicyObj.setFormat(nameIdPolicy);
+       } else {
+           nameIDPolicyObj.setFormat(SSOConstants.NAME_ID_POLICY_DEFAULT);
+       }
+       nameIDPolicyObj.setAllowCreate(true);
+       return nameIDPolicyObj;
+   }
+	
+    /** Build NameID object given name ID format
+    *
+    * @param nameIdFormat Name ID format
+    * @param subject Subject
+    * @return SAML NameID object
+    */
+   public static NameID buildNameID(String nameIdFormat, String subject) {
+       NameID nameIdObj = new NameIDBuilder().buildObject();
+       if (!StringUtils.isEmpty(nameIdFormat)) {
+           nameIdObj.setFormat(nameIdFormat);
+       } else {
+           nameIdObj.setFormat(SSOConstants.NAME_ID_POLICY_DEFAULT);
+       }
+       nameIdObj.setValue(subject);
+       return nameIdObj;
+   }
+   
+   /**
+    * Replaces the ${} in url with system properties and returns
+    *
+    * @param acsUrl assertion consumer service url
+    * @return acsUrl with system properties replaced
+    */
+   public static String processAcsUrl(String acsUrl) {
+       //matches shortest segments that are between '{' and '}'
+       Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
+       Matcher matcher = pattern.matcher(acsUrl);
+       while (matcher.find()) {
+           String match = matcher.group(1);
+           String property = System.getProperty(match);
+           if (property != null) {
+               acsUrl = acsUrl.replace("${" + match + "}", property);
+           } else {
+               log.warn("System Property " + match + " is not set");
+           }
+       }
+       return acsUrl;
+   }
 
 }

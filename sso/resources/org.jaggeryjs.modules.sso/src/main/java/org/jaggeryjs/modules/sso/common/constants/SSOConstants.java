@@ -41,6 +41,9 @@ public class SSOConstants {
     public static final int MAX_CLUSTER_MESSAGE_RETRY_COUNT = 4;
     public static final int CLUSTERING_MESSAGE_RETRY_DELAY = 2000;
     public static final boolean CLUSTERING_MESSAGE_ISRPC = true;
+    
+    public static final String NAME_ID_POLICY = "nameIdPolicy";
+    public static final String NAME_ID_POLICY_DEFAULT = "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
 
     public SSOConstants() {
     }
