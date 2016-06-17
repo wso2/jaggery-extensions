@@ -66,6 +66,8 @@
         <commons.logging.version>1.1.1</commons.logging.version>
         <commons.logging.imp.pkg.version>1.1.1</commons.logging.imp.pkg.version>
 
+        <commons.lang.version>2.6</commons.lang.version>
+
         <carbon.kernel.version>4.4.1</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.4.0, 5.0.0)</carbon.kernel.imp.pkg.version>
 
@@ -356,6 +358,11 @@
                 <groupId>org.wso2.carbon.commons</groupId>
                 <artifactId>org.wso2.carbon.hostobjects.sso</artifactId>
                 <version>${carbon.commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons.lang.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
