@@ -28,12 +28,26 @@
 
 
     var buildArtifact = function (manager, artifact) {
+
+        var currentLCStateDurationObject = artifact.getCurrentStateDuration(String(artifact.id), artifact.getLifecycleName());
+
+        var currentLCStateDuration = null;
+        var currentLCStateDurationColour = null;
+
+        if (currentLCStateDurationObject != null) {
+            currentLCStateDuration = currentLCStateDurationObject.get('currentStateDuration');
+            currentLCStateDurationColour = currentLCStateDurationObject.get('durationColour');
+        }
+
+
         return {
             id: String(artifact.id),
             type: String(manager.type),
             path: "/_system/governance" + String(artifact.getPath()),
             lifecycle: artifact.getLifecycleName(),
             lifecycleState: artifact.getLifecycleState(),
+            currentLCStateDuration: currentLCStateDuration,
+            currentLCStateDurationColour: currentLCStateDurationColour,
             mediaType: String(artifact.getMediaType()),
             attributes: (function () {
                 var i, name,
