@@ -3,10 +3,12 @@ engine('handlebars', (function () {
         pagesDir, populate, serialize, globals, theme, renderersDir, helpersDir, translate, evalCode,
         languages = {},
         caramelData = 'X-Caramel-Data',
+        yCaramelData = 'caramelCompiled',
         log = new Log(),
         Handlebars = require('handlebars').Handlebars;
 
     evalCode = function (code, data, theme) {
+        log.info("#####Before Resolve4#####");
         var template,
             file = new File(theme.resolve.call(theme, 'code/' + code));
         file.open('r');
@@ -153,7 +155,7 @@ engine('handlebars', (function () {
         }
         return caramel.url(path);
     });
-    
+
     /**
      * Registers  'encodeURIComponent' handler for resolving encode URI components
      * {{encodeURIComponent "test&test"}}
@@ -439,7 +441,7 @@ engine('handlebars', (function () {
 
     partials = function (Handlebars) {
         var theme = caramel.theme();
-        (function register(prefix, file) {
+        function register(prefix, file) {
             var i, length, name, files;
             if (file.isDirectory()) {
                 files = file.listFiles();
@@ -457,7 +459,7 @@ engine('handlebars', (function () {
                 Handlebars.registerPartial(prefix.substring(0, prefix.length - 4), file.readAll());
                 file.close();
             }
-        })('', new File(theme.resolve(partialsDir)));
+        }('', new File(theme.resolve(partialsDir)));
     };
 
     /**
@@ -472,12 +474,17 @@ engine('handlebars', (function () {
     };
 
     render = function (data, meta) {
+        // log.info("\n####render function#####"+stringify(data)+'\n\n'+stringify(meta));
         var fn,
             path = meta.request.getMappedPath() || meta.request.getRequestURI();
+        log.info("#####Before Resolve#####");
+
         path = caramel.theme().resolve(renderersDir + path.substring(0, path.length - 4) + '.js');
         if (log.isDebugEnabled()) {
             log.debug('Rendering data for the request using : ' + path);
         }
+        // log.info('##########\n\nRendering data for the request using : ' + path + 'require(path) : '+require(path).render +'\n' +
+        //     'print(caramel.build(data)) : '+print(caramel.build(data)));
         if (!new File(path).isExists() || !(fn = require(path).render)) {
             print(caramel.build(data));
             return;
@@ -485,9 +492,8 @@ engine('handlebars', (function () {
         fn(theme, data, meta, function (path) {
             return require(caramel.theme().resolve(path));
         });
+        log.info("####Done Rendering####");
     };
-
-
 
     translate = function (text) {
         var language, dir, path,
@@ -513,15 +519,40 @@ engine('handlebars', (function () {
      */
     theme = function (page, contexts, js, css, code) {
         var file, template, path, area, blocks, helper, length, i, o, areas, block,
-            areaContexts, data, areaData, find, blockData, resolve, partials, findPartials, analyzePartials,
+            areaContexts, data, areaData, find, blockData, resolve, partials, findPartials, analyzePartials, testFunction,
             theme = caramel.theme(),
             meta = caramel.meta(),
-            xcd = meta.request.getHeader(caramelData);
+            xcd = meta.request.getHeader(caramelData),
+            ycd = meta.request.getHeader(yCaramelData);
+
         js = js || [];
         css = css || [];
         code = code || [];
 
+        if(ycd) {
+            log.info("#####In YCD#####");
+            path = caramel.theme().resolve(partialsDir + '/' + 'top_assets' + '.hbs');
+            log.info('****Context****\n\n'+stringify(contexts.body[0].context)+'\n\n');
+            if (log.isDebugEnabled()) {
+                log.debug('Rendering page : ' + path);
+            }
+            file = new File(path);
+            file.open('r');
+            template = Handlebars.compile(file.readAll());
+            file.close();
+            var output = template(contexts.body[0].context);
+            response.contentType = "text";
+            // for(p in response) {
+            //     log.info("#### p : "+p)
+            // }
+            print(output);
+            log.info("****printed****"+output);
+            return;
+        }
+
+        //if (xcd), register following functions, execute them as mentioned in for loop, then return.
         if (xcd) {
+            log.info("****In XCD****");
             find = function (areaContexts, partial) {
                 var i, context,
                     length = areaContexts.length;
@@ -534,6 +565,7 @@ engine('handlebars', (function () {
                 return null;
             };
             resolve = function (parent, paths) {
+                log.info("######in resolve")
                 if (paths instanceof Array) {
                     var p = [];
                     paths.forEach(function (path) {
@@ -585,20 +617,26 @@ engine('handlebars', (function () {
                 }
             };
             areas = parse(xcd);
+            log.info(stringify(areas));
+            log.info("####contexts####\n"+stringify(contexts));
             for (area in areas) {
                 if (areas.hasOwnProperty(area)) {
                     areaContexts = contexts[area];
+                    log.info("####area contexts####"+stringify(areaContexts));
                     if (areaContexts instanceof Array) {
                         blocks = areas[area];
                         areaData = (data[area] = {});
                         length = blocks.length;
+                        log.info("####blocks#### "+blocks);
                         for (i = 0; i < length; i++) {
                             block = blocks[i];
                             blockData = (areaData[block] = {
                                 resources: {}
                             });
+                            log.info("####partials#### "+stringify(data._.partials));
                             findPartials(data._.partials, block);
                             blockData.context = find(areaContexts, block);
+                            log.info("####Before Resolve###2");
                             path = theme.resolve.call(theme, helpersDir + '/' + block + '.js');
                             if (new File(path).isExists()) {
                                 helper = require(path);
@@ -621,6 +659,7 @@ engine('handlebars', (function () {
             data._.css = css;
             data._.code = code;
             meta.response.addHeader('Content-Type', 'application/json');
+            // log.info("####output data - \n\n"+stringify(data));
             print(data);
             return;
         }
@@ -631,6 +670,8 @@ engine('handlebars', (function () {
                 if (blocks instanceof Array) {
                     length = blocks.length;
                     for (i = 0; i < length; i++) {
+                        //this is executing when the top-assets page loads first time. may be from the jaggery render.
+                        log.info("#####Before Resolve5#####");
                         path = caramel.theme().resolve(helpersDir + '/' + blocks[i].partial + '.js');
                         if (new File(path).isExists()) {
                             helper = require(path);
@@ -648,6 +689,7 @@ engine('handlebars', (function () {
         meta.js = js;
         meta.css = css;
         meta.code = code;
+        log.info("#####Before Resolve3#####");
         path = caramel.theme().resolve(pagesDir + '/' + page + '.hbs');
         if (log.isDebugEnabled()) {
             log.debug('Rendering page : ' + path);
@@ -657,9 +699,11 @@ engine('handlebars', (function () {
         template = Handlebars.compile(file.readAll());
         file.close();
         print(template(contexts));
+        log.info("####template####"+template);
     };
 
     renderJS = function (js, inline) {
+        log.info("####renderJs####");
         return '<script' + (inline ? '>' + js : ' src="' + js + '">') + '</script>';
     };
 
@@ -672,6 +716,7 @@ engine('handlebars', (function () {
     };
 
     populate = function (dir, ext, theme) {
+        log.info("####before resolve 1####")
         var i, n,
             a = [],
             files = new File(theme.resolve(dir + ext)),
