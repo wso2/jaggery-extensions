@@ -3,7 +3,7 @@ engine('handlebars', (function () {
         pagesDir, populate, serialize, globals, theme, renderersDir, helpersDir, translate, evalCode,
         languages = {},
         caramelData = 'X-Caramel-Data',
-        CaramelCompiledData = 'X-Compiled-Templates',
+        CaramelCompiledTemplates = 'X-Compiled-Templates',
         log = new Log(),
         Handlebars = require('handlebars').Handlebars;
 
@@ -518,7 +518,7 @@ engine('handlebars', (function () {
             theme = caramel.theme(),
             meta = caramel.meta(),
             xcd = meta.request.getHeader(caramelData),
-            ccd = meta.request.getHeader(CaramelCompiledData);
+            cct = meta.request.getHeader(CaramelCompiledTemplates);
 
         js = js || [];
         css = css || [];
@@ -528,8 +528,8 @@ engine('handlebars', (function () {
          * Set the Caramel-Compiled header to compile the required partial from the backend
          * and send the HTML block to the frontend.
          */
-        if(ccd) {
-            areas = parse(ccd);
+        if(cct) {
+            areas = parse(cct);
             if(areas != null) {
                 /**
                  * At the moment we only support one key-value pair of partials to be rendered using this function
