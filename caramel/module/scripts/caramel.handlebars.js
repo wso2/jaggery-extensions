@@ -3,7 +3,7 @@ engine('handlebars', (function () {
         pagesDir, populate, serialize, globals, theme, renderersDir, helpersDir, translate, evalCode,
         languages = {},
         caramelData = 'X-Caramel-Data',
-        CaramelCompiledData = 'Caramel-Compiled',
+        CaramelCompiledData = 'X-Compiled-Templates',
         log = new Log(),
         Handlebars = require('handlebars').Handlebars;
 
@@ -526,25 +526,40 @@ engine('handlebars', (function () {
 
         /**
          * Set the Caramel-Compiled header to compile the required partial from the backend
-         * and send the HTML block to the frontend. 
+         * and send the HTML block to the frontend.
          */
         if(ccd) {
             areas = parse(ccd);
-            path = caramel.theme().resolve(partialsDir + '/' + areas.body + '.hbs');
-            if (log.isDebugEnabled()) {
-                log.debug('Rendering page : ' + path);
+            if(areas != null) {
+                /**
+                 * At the moment we only support one key-value pair of partials to be rendered using this function
+                 * at once. Therefore retrieve the 0th element of the array.
+                 */
+                var areaKey = Object.keys(areas)[0];
+                path = caramel.theme().resolve(partialsDir + '/' + areas[areaKey] + '.hbs');
+                if (log.isDebugEnabled()) {
+                    log.debug('Rendering page : ' + path);
+                }
+                try {
+                    file = new File(path);
+                    file.open('r');
+                    template = Handlebars.compile(file.readAll());
+                }
+                finally {
+                    file.close();
+                }
+                areaContexts = contexts[areaKey];
+                /**
+                 * In the contexts object, areaContext is an array with a single element.
+                 * Therefore the first element is selected.
+                 */
+                var output = template(areaContexts[0].context);
+                response.contentType = "text";
+                print(output);
             }
-            file = new File(path);
-            file.open('r');
-            template = Handlebars.compile(file.readAll());
-            file.close();
-            var output = template(contexts.body[0].context);
-            response.contentType = "text";
-            print(output);
             return;
         }
 
-        //if (xcd), register following functions, execute them as mentioned in for loop, then return.
         if (xcd) {
             find = function (areaContexts, partial) {
                 var i, context,
