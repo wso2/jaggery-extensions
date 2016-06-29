@@ -96,10 +96,6 @@
                             <bundles>
                                 <bundleDef>org.jaggeryjs.modules.sso:org.jaggeryjs.modules.sso</bundleDef>
                             </bundles>
-                            <importBundles>
-                                <importBundleDef>org.wso2.carbon.commons:org.wso2.carbon.hostobjects.sso
-                                </importBundleDef>
-                            </importBundles>
                         </configuration>
                     </execution>
                 </executions>
