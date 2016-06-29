@@ -528,9 +528,9 @@ engine('handlebars', (function () {
          * Set the Caramel-Compiled header to compile the required partial from the backend
          * and send the HTML block to the frontend.
          */
-        if(cct) {
+        if (cct) {
             areas = parse(cct);
-            if(areas != null) {
+            if (areas != null) {
                 /**
                  * At the moment we only support one key-value pair of partials to be rendered using this function
                  * at once. Therefore retrieve the 0th element of the array.
@@ -544,8 +544,7 @@ engine('handlebars', (function () {
                     file = new File(path);
                     file.open('r');
                     template = Handlebars.compile(file.readAll());
-                }
-                finally {
+                } finally {
                     file.close();
                 }
                 areaContexts = contexts[areaKey];
