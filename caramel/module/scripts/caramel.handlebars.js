@@ -440,7 +440,7 @@ engine('handlebars', (function () {
 
     partials = function (Handlebars) {
         var theme = caramel.theme();
-        function register(prefix, file) {
+        (function register(prefix, file) {
             var i, length, name, files;
             if (file.isDirectory()) {
                 files = file.listFiles();
@@ -458,7 +458,7 @@ engine('handlebars', (function () {
                 Handlebars.registerPartial(prefix.substring(0, prefix.length - 4), file.readAll());
                 file.close();
             }
-        }('', new File(theme.resolve(partialsDir)));
+        })('', new File(theme.resolve(partialsDir)));
     };
 
     /**
