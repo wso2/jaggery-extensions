@@ -3,6 +3,7 @@ engine('handlebars', (function () {
         pagesDir, populate, serialize, globals, theme, renderersDir, helpersDir, translate, evalCode,
         languages = {},
         caramelData = 'X-Caramel-Data',
+        CaramelCompiledTemplates = 'X-Compiled-Templates',
         log = new Log(),
         Handlebars = require('handlebars').Handlebars;
 
@@ -153,7 +154,7 @@ engine('handlebars', (function () {
         }
         return caramel.url(path);
     });
-    
+
     /**
      * Registers  'encodeURIComponent' handler for resolving encode URI components
      * {{encodeURIComponent "test&test"}}
@@ -474,10 +475,12 @@ engine('handlebars', (function () {
     render = function (data, meta) {
         var fn,
             path = meta.request.getMappedPath() || meta.request.getRequestURI();
+
         path = caramel.theme().resolve(renderersDir + path.substring(0, path.length - 4) + '.js');
         if (log.isDebugEnabled()) {
             log.debug('Rendering data for the request using : ' + path);
         }
+        //     'print(caramel.build(data)) : '+print(caramel.build(data)));
         if (!new File(path).isExists() || !(fn = require(path).render)) {
             print(caramel.build(data));
             return;
@@ -486,8 +489,6 @@ engine('handlebars', (function () {
             return require(caramel.theme().resolve(path));
         });
     };
-
-
 
     translate = function (text) {
         var language, dir, path,
@@ -513,13 +514,53 @@ engine('handlebars', (function () {
      */
     theme = function (page, contexts, js, css, code) {
         var file, template, path, area, blocks, helper, length, i, o, areas, block,
-            areaContexts, data, areaData, find, blockData, resolve, partials, findPartials, analyzePartials,
+            areaContexts, data, areaData, find, blockData, resolve, partials, findPartials, analyzePartials, testFunction,
             theme = caramel.theme(),
             meta = caramel.meta(),
-            xcd = meta.request.getHeader(caramelData);
+            xcd = meta.request.getHeader(caramelData),
+            cct = meta.request.getHeader(CaramelCompiledTemplates);
+
         js = js || [];
         css = css || [];
         code = code || [];
+
+        /**
+         * Set the Caramel-Compiled header to compile the required partial from the backend
+         * and send the HTML block to the frontend.
+         */
+        if (cct) {
+            areas = parse(cct);
+            if (areas != null) {
+                /**
+                 * At the moment we only support one key-value pair of partials to be rendered using this function
+                 * at once. Therefore retrieve the 0th element of the array.
+                 */
+                var areaKey = Object.keys(areas)[0];
+                path = caramel.theme().resolve(partialsDir + '/' + areas[areaKey] + '.hbs');
+                if (log.isDebugEnabled()) {
+                    log.debug('Rendering page : ' + path);
+                }
+                try {
+                    file = new File(path);
+                    file.open('r');
+                    template = Handlebars.compile(file.readAll());
+                } catch (e) {
+                    log.error(e.toString());
+                    throw new Error('Error while reading the partial', e);
+                } finally {
+                    file.close();
+                }
+                areaContexts = contexts[areaKey];
+                /**
+                 * In the contexts object, areaContext is an array with a single element.
+                 * Therefore the first element is selected.
+                 */
+                var output = template(areaContexts[0].context);
+                response.contentType = "text";
+                print(output);
+            }
+            return;
+        }
 
         if (xcd) {
             find = function (areaContexts, partial) {
@@ -631,6 +672,7 @@ engine('handlebars', (function () {
                 if (blocks instanceof Array) {
                     length = blocks.length;
                     for (i = 0; i < length; i++) {
+                        //this is executing when the top-assets page loads first time.
                         path = caramel.theme().resolve(helpersDir + '/' + blocks[i].partial + '.js');
                         if (new File(path).isExists()) {
                             helper = require(path);
