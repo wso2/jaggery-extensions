@@ -121,8 +121,10 @@ public class SSOSessionManager {
         String sessionId = ServiceProviderSession.getSessionId(session);
         String idpSessionIndex = getIDPSessionIndex(sessionId);
         if (idpSessionIndex == null) {
-            log.warn(String.format("Unable to locate an IDP Session Index for the provided session:%s .Aborting" +
-                    " clean up operations.", sessionId));
+            if (log.isDebugEnabled()) {
+                log.warn(String.format("Unable to locate an IDP Session Index for the provided session:%s .Aborting" +
+                        " clean up operations.", sessionId));
+            }
             return;
         }
         ServiceProviderMap serviceProviderMap = getServiceProviderSessionMap(idpSessionIndex);
