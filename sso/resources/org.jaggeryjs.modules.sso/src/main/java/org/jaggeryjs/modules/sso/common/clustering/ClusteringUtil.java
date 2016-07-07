@@ -41,7 +41,7 @@ public class ClusteringUtil {
     public static void sendClusterMessage(ClusteringMessage message) {
         ClusteringAgent agent = createClusteringAgent();
         if (agent == null) {
-            log.error("Unable to send the clustering message as a clustering agent was not obtained.");
+            //log.error("Unable to send the clustering message as a clustering agent was not obtained.");
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Failed to send cluster message :%s ", message));
             }
@@ -54,8 +54,10 @@ public class ClusteringUtil {
                 log.debug(String.format("Successfully transmitted cluster message :%s", message));
             }
         } catch (ClusteringFault e) {
-            log.error("Unable to send the clustering message.The system will now attempt to retry " +
-                    "sending the message", e);
+            if (log.isDebugEnabled()) {
+                log.error("Unable to send the clustering message.The system will now attempt to retry " +
+                        "sending the message", e);
+            }
             Thread th = new Thread(new FailedClusterMessageTransmitter(agent, message));
             th.start();
         }
