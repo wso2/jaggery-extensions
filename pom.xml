@@ -71,7 +71,7 @@
         <carbon.kernel.version>4.4.6</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.4.0, 5.0.0)</carbon.kernel.imp.pkg.version>
 
-        <jaggery.version>0.12.6-SNAPSHOT</jaggery.version>
+        <jaggery.version>0.12.6</jaggery.version>
         <jaggery.imp.pkg.version>[0.10.0, 1.0.0)</jaggery.imp.pkg.version>
 
         <carbon.commons.version>4.3.2</carbon.commons.version>
