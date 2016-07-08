@@ -92,7 +92,7 @@ var registry = registry || {};
                 },
                 content: content(registry, resource, {
                     start: 0,
-                    count: 10
+                    count: -1
                 }),
                 id: String(resource.id),
                 version: resource.versionNumber
