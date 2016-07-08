@@ -85,6 +85,10 @@
                         <Export-Package>
                             org.jaggeryjs.modules.ws.*;
                         </Export-Package>
+                        <Import-Package>
+                            javax.xml.parsers;version=0.0.0,
+                            *;resolution:=optional
+                        </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
                 </configuration>
