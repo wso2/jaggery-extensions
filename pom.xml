@@ -90,6 +90,8 @@
         <opensaml2.wso2.version>2.4.1.wso2v1</opensaml2.wso2.version>
         <commons-codec.osgi.version>1.4.0.wso2v1</commons-codec.osgi.version>
         <sso.hostobjects.version>1.0.1</sso.hostobjects.version>
+        <xmlsec.version>1.5.8</xmlsec.version>
+        <imp.pkg.version.xmlsec>[1.4.2, 2.0.0)</imp.pkg.version.xmlsec>
 
         <axis2.osgi.version>1.6.1.wso2v12</axis2.osgi.version>
         <axiom.osgi.version>1.2.11.wso2v6</axiom.osgi.version>
