@@ -37,8 +37,14 @@ var client = {};
      * @return {*}
      */
     client.getSamlObject = function (samlResp) {
-        var decodedResp = Util.decode(samlResp);
-        return Util.unmarshall(decodedResp);
+        var marshalledResponse;
+        try  {
+            var decodedResp = Util.decode(samlResp);
+            marshalledResponse = Util.unmarshall(decodedResp);
+        } catch (e) {
+            log.error('Unable to unmarshall SAML response',e);
+        }
+        return marshalledResponse;
     };
 
     /**

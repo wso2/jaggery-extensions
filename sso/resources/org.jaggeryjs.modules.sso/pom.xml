@@ -50,6 +50,7 @@
                         </Export-Package>
                         <Import-Package>
                             javax.xml.parsers;version=0.0.0,
+                            org.apache.xml.security.*;version="${imp.pkg.version.xmlsec}",
                             *;resolution:=optional
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
@@ -88,6 +89,11 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.santuario</groupId>
+            <artifactId>xmlsec</artifactId>
+            <version>${xmlsec.version}</version>
         </dependency>
     </dependencies>
 
