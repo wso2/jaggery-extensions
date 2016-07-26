@@ -165,24 +165,24 @@ public class Util {
             UnmarshallerFactory unmarshallerFactory = Configuration.getUnmarshallerFactory();
             Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(element);
             response = unmarshaller.unmarshall(element);
-            if (response instanceof Response) {
-                NodeList list = response.getDOM().getElementsByTagNameNS(SAMLConstants.SAML20P_NS, "Response");
-                if (list.getLength() > 0) {
-                    log.error("Invalid schema for the SAML2 reponse. Multiple response objects found");
-                    throw new Exception("Error occured while processing saml2 response. Multiple response objects found");
+            NodeList list = response.getDOM().getElementsByTagNameNS(SAMLConstants.SAML20P_NS, "Response");
+            if (list.getLength() > 0) {
+                log.error("Invalid schema for the SAML2 reponse. Multiple response objects found");
+                throw new Exception("Error occured while processing saml2 response. Multiple response objects found");
+            }
+            NodeList assertionList = response.getDOM().getElementsByTagNameNS(SAMLConstants.SAML20_NS, "Assertion");
+            if (response instanceof Assertion) {
+                if (assertionList.getLength() > 0) {
+                    log.error("Invalid schema for the SAML2 assertion. Multiple assertions detected");
+                    throw new Exception("Error occurred while processing saml2 response. Multiple assertions detected");
                 }
-                NodeList assertionList = response.getDOM().getElementsByTagNameNS(SAMLConstants.SAML20_NS, "Assertion");
+            } else {
                 if (assertionList.getLength() > 1) {
                     log.error("Invalid schema for the SAML2 response. Multiple assertions detected");
                     throw new Exception("Error occurred while processing saml2 response. Multiple assertions detected");
                 }
-            } else if (response instanceof Assertion) {
-                NodeList assertionList = response.getDOM().getElementsByTagNameNS(SAMLConstants.SAML20_NS, "Assertion");
-                if (assertionList.getLength() > 0) {
-                    log.error("Invalid schema for the SAML2 response. Multiple assertions detected");
-                    throw new Exception("Error occurred while processing saml2 response. Multiple assertions detected");
-                }
             }
+
             return response;
         } catch (Exception e) {
             throw new Exception("Error in constructing AuthRequest from " +
