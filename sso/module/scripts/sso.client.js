@@ -250,7 +250,7 @@ client.validateSamlResponse = function(samlObj, props, keyStoreProps) {
 
     //Step #3: Validate the response signature
     if (isResponseSigningEnabled) {
-        isValid = sso.client.validateSignature(samlObj, keyStoreProps);
+        isValid = client.validateSignature(samlObj, keyStoreProps);
     }
 
     //Break processing if the signature validation fails
