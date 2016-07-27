@@ -241,7 +241,7 @@ client.validateSamlResponse = function(samlObj, props, keyStoreProps) {
     }
     //Step #2: Validate the assertion audience
     if (isAudienceRestrictionChecked) {
-        isValid = Util.validateAudienceRestriction(samlRespObj, propList);
+        isValid = Util.validateAudienceRestriction(samlObj, propList);
     }
     //Break processing if the audience restriction check fails
     if (!isValid) {
