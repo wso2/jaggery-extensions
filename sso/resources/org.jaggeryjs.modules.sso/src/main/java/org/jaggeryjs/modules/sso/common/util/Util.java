@@ -93,6 +93,8 @@ public class Util {
     private static final String ISSUER = "issuer";
     private static final String IDENTITY_PROVIDER_ERROR = "urn:oasis:names:tc:SAML:2.0:status:Responder";
     private static final String NO_PASSIVE = "urn:oasis:names:tc:SAML:2.0:status:NoPassive";
+    private static final String TIME_STAMP_SKEW = "timeStampSkew";
+    private static final int DEAFAULT_TIME_STAMP_SKEW_IN_SECONDS = 300;
 
     private static Random random = new Random();
 
@@ -413,7 +415,7 @@ public class Util {
      *
      * @param resp  SAML Response
      */
-    public static boolean validateAssertionValidityPeriod(Response resp) {
+    public static boolean validateAssertionValidityPeriod(Response resp, Properties prop) {
         Assertion assertion;
         assertion = retrieveAssertion(resp);
         if (assertion == null) {
@@ -422,19 +424,20 @@ public class Util {
         }
         DateTime validFrom = assertion.getConditions().getNotBefore();
         DateTime validTill = assertion.getConditions().getNotOnOrAfter();
+        int timeStampSkewInSeconds = getTimeStampSkewInSeconds(prop);
 
-        if (validFrom != null && validFrom.isAfterNow()) {
+        if (validFrom != null && validFrom.minusSeconds(timeStampSkewInSeconds).isAfterNow()) {
             log.error("Failed to meet SAML Assertion Condition 'Not Before'");
             return false;
         }
 
-        if (validTill != null && validTill.isBeforeNow()) {
+        if (validTill != null && validTill.plusSeconds(timeStampSkewInSeconds).isBeforeNow()) {
             log.error("Failed to meet SAML Assertion Condition 'Not On Or After'");
             return false;
         }
 
         if (validFrom != null && validTill != null && validFrom.isAfter(validTill)) {
-            log.error("SAML Assertion Condition 'Not Before' must be less than the value of 'Not On Or After'");
+            log.error("SAML Assertion Condition 'Not Before' must be less than the " + "value of 'Not On Or After'");
             return false;
         }
         return true;
@@ -487,6 +490,23 @@ public class Util {
         }
         return true;
     }
+
+    private static int getTimeStampSkewInSeconds(Properties prop) {
+        int timeStampSkewInSeconds = DEAFAULT_TIME_STAMP_SKEW_IN_SECONDS;
+        if (prop != null && prop.containsKey(TIME_STAMP_SKEW)) {
+            String timeStampSkew = prop.get(TIME_STAMP_SKEW).toString();
+            if (timeStampSkew != null && timeStampSkew.length() > 0) {
+                timeStampSkewInSeconds = Integer.parseInt(timeStampSkew);
+            }
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("TimestampSkew is set to " + timeStampSkewInSeconds + " s.");
+        }
+
+        return timeStampSkewInSeconds;
+    }
+
 
     private static Assertion retrieveAssertion(Response resp) {
         Assertion assertion = null;
