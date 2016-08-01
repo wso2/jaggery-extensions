@@ -232,7 +232,7 @@ client.validateSamlResponse = function(samlObj, props, keyStoreProps) {
 
     //Step #1: Validate the token validity period
     if (isAssertionValidityPeriodChecked) {
-        isValid = Util.validateAssertionValidityPeriod(samlObj);
+        isValid = Util.validateAssertionValidityPeriod(samlObj, propList);
     }
     
     //Break processing if the assertion validity period has expired
