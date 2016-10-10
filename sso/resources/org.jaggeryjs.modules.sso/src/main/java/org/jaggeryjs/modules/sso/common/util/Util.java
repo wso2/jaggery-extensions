@@ -146,6 +146,7 @@ public class Util {
         } catch (NoSuchAlgorithmException e) {
             log.warn("Error while building Secure Random ID", e);
         }
+        //This will only be executed if the try block fails to generate the ID.
         return null;
     }
 
