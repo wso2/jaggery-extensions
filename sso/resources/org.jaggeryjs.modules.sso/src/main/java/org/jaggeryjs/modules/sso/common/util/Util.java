@@ -144,7 +144,7 @@ public class Util {
             SecureRandomIdentifierGenerator generator = new SecureRandomIdentifierGenerator();
             return generator.generateIdentifier();
         } catch (NoSuchAlgorithmException e) {
-            log.warn("Error while building Secure Random ID");
+            log.warn("Error while building Secure Random ID", e);
         }
         return null;
     }
