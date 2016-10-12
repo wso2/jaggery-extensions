@@ -2,8 +2,8 @@ engine('handlebars', (function () {
     var renderData, partials, init, page, render, meta, partialsDir, renderJS, renderCSS,
         pagesDir, populate, serialize, globals, theme, renderersDir, helpersDir, translate, evalCode,
         languages = {},
-        caramelData = 'X-Caramel-Data',
-        CaramelCompiledTemplates = 'X-Compiled-Templates',
+        caramelData = 'x-Caramel-Data',
+        CaramelCompiledTemplates = 'x-Compiled-Templates',
         log = new Log(),
         Handlebars = require('handlebars').Handlebars;
 
@@ -530,12 +530,12 @@ engine('handlebars', (function () {
          */
         if (cct) {
             areas = parse(cct);
-            if (areas != null) {
+            var areaKey = Object.keys(areas || {} ) [0];
+            if (areas && areas[areaKey]) {
                 /**
                  * At the moment we only support one key-value pair of partials to be rendered using this function
                  * at once. Therefore retrieve the 0th element of the array.
                  */
-                var areaKey = Object.keys(areas)[0];
                 path = caramel.theme().resolve(partialsDir + '/' + areas[areaKey] + '.hbs');
                 if (log.isDebugEnabled()) {
                     log.debug('Rendering page : ' + path);
@@ -555,7 +555,7 @@ engine('handlebars', (function () {
                  * In the contexts object, areaContext is an array with a single element.
                  * Therefore the first element is selected.
                  */
-                var output = template(areaContexts[0].context);
+                var output = template(areaContexts[0] ? (areaContexts[0].context || {} ) : {});
                 response.contentType = "text";
                 print(output);
             }
