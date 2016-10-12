@@ -545,8 +545,8 @@ engine('handlebars', (function () {
                     file.open('r');
                     template = Handlebars.compile(file.readAll());
                 } catch (e) {
-                    log.error(e.toString());
-                    throw new Error('Error while reading the partial', e);
+                    log.error("Error while processing the partial", e);
+                    throw new Error('Error while processing the partial', e);
                 } finally {
                     file.close();
                 }
