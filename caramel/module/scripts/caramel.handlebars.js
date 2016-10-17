@@ -2,8 +2,8 @@ engine('handlebars', (function () {
     var renderData, partials, init, page, render, meta, partialsDir, renderJS, renderCSS,
         pagesDir, populate, serialize, globals, theme, renderersDir, helpersDir, translate, evalCode,
         languages = {},
-        caramelData = 'x-Caramel-Data',
-        CaramelCompiledTemplates = 'x-Compiled-Templates',
+        caramelData = 'X-Caramel-Data',
+        caramelCompiledTemplates = 'X-Compiled-Templates',
         log = new Log(),
         Handlebars = require('handlebars').Handlebars;
 
@@ -518,7 +518,7 @@ engine('handlebars', (function () {
             theme = caramel.theme(),
             meta = caramel.meta(),
             xcd = meta.request.getHeader(caramelData),
-            cct = meta.request.getHeader(CaramelCompiledTemplates);
+            cct = meta.request.getHeader(caramelCompiledTemplates);
 
         js = js || [];
         css = css || [];
