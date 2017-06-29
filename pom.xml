@@ -180,6 +180,15 @@
             </snapshots>
         </repository>
         <repository>
+            <id>shibboleth-release</id>
+            <name>Internet3</name>
+            <layout>default</layout>
+            <url>https://build.shibboleth.net/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>wso2-nexus</id>
             <name>WSO2 Internal Repository</name>
             <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
