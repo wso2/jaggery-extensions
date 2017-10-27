@@ -3,7 +3,7 @@ engine('handlebars', (function () {
         pagesDir, populate, serialize, globals, theme, renderersDir, helpersDir, translate, evalCode,
         languages = {},
         caramelData = 'X-Caramel-Data',
-        CaramelCompiledTemplates = 'X-Compiled-Templates',
+        caramelCompiledTemplates = 'X-Compiled-Templates',
         log = new Log(),
         Handlebars = require('handlebars').Handlebars;
 
@@ -518,7 +518,7 @@ engine('handlebars', (function () {
             theme = caramel.theme(),
             meta = caramel.meta(),
             xcd = meta.request.getHeader(caramelData),
-            cct = meta.request.getHeader(CaramelCompiledTemplates);
+            cct = meta.request.getHeader(caramelCompiledTemplates);
 
         js = js || [];
         css = css || [];
@@ -530,12 +530,12 @@ engine('handlebars', (function () {
          */
         if (cct) {
             areas = parse(cct);
-            if (areas != null) {
+            var areaKey = Object.keys(areas || {} ) [0];
+            if (areas && areas[areaKey]) {
                 /**
                  * At the moment we only support one key-value pair of partials to be rendered using this function
                  * at once. Therefore retrieve the 0th element of the array.
                  */
-                var areaKey = Object.keys(areas)[0];
                 path = caramel.theme().resolve(partialsDir + '/' + areas[areaKey] + '.hbs');
                 if (log.isDebugEnabled()) {
                     log.debug('Rendering page : ' + path);
@@ -545,8 +545,8 @@ engine('handlebars', (function () {
                     file.open('r');
                     template = Handlebars.compile(file.readAll());
                 } catch (e) {
-                    log.error(e.toString());
-                    throw new Error('Error while reading the partial', e);
+                    log.error("Error while processing the partial", e);
+                    throw new Error('Error while processing the partial', e);
                 } finally {
                     file.close();
                 }
@@ -555,7 +555,7 @@ engine('handlebars', (function () {
                  * In the contexts object, areaContext is an array with a single element.
                  * Therefore the first element is selected.
                  */
-                var output = template(areaContexts[0].context);
+                var output = template(areaContexts[0] ? (areaContexts[0].context || {} ) : {});
                 response.contentType = "text";
                 print(output);
             }
