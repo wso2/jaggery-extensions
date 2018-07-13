@@ -65,15 +65,20 @@ public class XSLTTransformer {
 
     public static void generateStub(Source xmlIn, Result result, Map paramMap)
             throws TransformerException {
-        InputStream stubXSLTStream =
-                XSLTTransformer.class.getClassLoader().getResourceAsStream(JSSTUB_XSL_LOCATION);
-        Source stubXSLSource = new StreamSource(stubXSLTStream);
-        transform(xmlIn, stubXSLSource, result, paramMap, new URIResolver() {
-            public Source resolve(String href, String base) {
-                InputStream is = XSLTTransformer.class.getResourceAsStream(href);
-                return new StreamSource(is);
-            }
-        });
+        try (InputStream stubXSLTStream = XSLTTransformer.class.getClassLoader()
+                .getResourceAsStream(JSSTUB_XSL_LOCATION);) {
+
+            Source stubXSLSource = new StreamSource(stubXSLTStream);
+            transform(xmlIn, stubXSLSource, result, paramMap, new URIResolver() {
+                public Source resolve(String href, String base) {
+                    InputStream is = XSLTTransformer.class.getResourceAsStream(href);
+                    return new StreamSource(is);
+                }
+            });
+        } catch (IOException e) {
+            log.error("Error while handling inputstream: ", e);
+            throw new TransformerException(e);
+        }
     }
 
     public static InputStream getWSDL2(InputStream wsdl1InStream, Map paramMap) throws TransformerException, ParserConfigurationException {
