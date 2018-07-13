@@ -25,7 +25,7 @@
 
     <groupId>org.jaggeryjs.modules</groupId>
     <artifactId>jaggery-modules</artifactId>
-    <version>1.5.7</version>
+    <version>1.5.8-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <name>Jaggery Modules</name>
@@ -36,7 +36,7 @@
         <url>https://github.com/wso2/jaggery-extensions.git</url>
         <developerConnection>scm:git:https://github.com/wso2/jaggery-extensions.git</developerConnection>
         <connection>scm:git:https://github.com/wso2/jaggery-extensions.git</connection>
-        <tag>v1.5.7</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <modules>
@@ -100,14 +100,14 @@
         <wss4j.osgi.version>1.5.11.wso2v11</wss4j.osgi.version>
 
         <!-- jaggery modules -->
-        <ws.module.version>1.5.7</ws.module.version>
-        <email.module.version>1.5.7</email.module.version>
-        <process.module.version>1.5.7</process.module.version>
-        <sso.module.version>1.5.7</sso.module.version>
-        <uuid.module.version>1.5.7</uuid.module.version>
-        <oauth.module.version>1.5.7</oauth.module.version>
-        <handlebars.version>1.5.7</handlebars.version>
-        <markdown.version>1.5.7</markdown.version>
+        <ws.module.version>1.5.8-SNAPSHOT</ws.module.version>
+        <email.module.version>1.5.8-SNAPSHOT</email.module.version>
+        <process.module.version>1.5.8-SNAPSHOT</process.module.version>
+        <sso.module.version>1.5.8-SNAPSHOT</sso.module.version>
+        <uuid.module.version>1.5.8-SNAPSHOT</uuid.module.version>
+        <oauth.module.version>1.5.8-SNAPSHOT</oauth.module.version>
+        <handlebars.version>1.5.8-SNAPSHOT</handlebars.version>
+        <markdown.version>1.5.8-SNAPSHOT</markdown.version>
     </properties>
 
     <build>
