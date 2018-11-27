@@ -285,7 +285,18 @@
     };
 
     ArtifactManager.prototype.count = function () {
-        return this.manager.getAllGenericArtifactIds().length;
+        var count = 0;
+        try {
+            // start 0, count 0, sortOrder "", sortBy "", limit 0
+            PaginationContext.init(0, 0, "", "", 0);
+            this.manager.findGenericArtifacts(java.util.Collections.emptyMap());
+            count = PaginationContext.getInstance().getLength();
+        } catch (e) {
+            log.error("Cannot retrieve total number of '" + this.type + "' artifacts.", e);
+        } finally {
+            PaginationContext.destroy();
+        }
+        return count;
     };
 
     /**
