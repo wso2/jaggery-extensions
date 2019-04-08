@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -97,16 +98,28 @@ public class XSLTTransformer {
             transform(wsdl10Source, wsdlXSLSource, resultWSDL20, paramMap, new URIResolver() {
                 public Source resolve(String href, String base) {
                     InputStream is = XSLTTransformer.class.getResourceAsStream(href);
-                    return new StreamSource(is);
+                    Source isSource = new StreamSource(is);
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        log.error(e.getMessage(), e);
+                    }
+                    return isSource;
                 }
             });
 
             ByteArrayOutputStream wsdl20OutputStream = new ByteArrayOutputStream();
             Source xmlSource = new DOMSource(docWSDL);
             Result outputTarget = new StreamResult(wsdl20OutputStream);
-            TransformerFactory.newInstance().newTransformer().transform(xmlSource, outputTarget);
+            TransformerFactory factory = TransformerFactory.newInstance();
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            Transformer transformer = factory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.transform(xmlSource, outputTarget);
             wsdlIS = new ByteArrayInputStream(wsdl20OutputStream.toByteArray());
-
+        } catch (TransformerException e) {
+            log.error(e.getMessage(), e);
+            throw e;
         } finally {
             try {
                 wsdl10to20xslt.close();

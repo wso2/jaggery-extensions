@@ -122,15 +122,15 @@ public class WSStubHostObject extends ScriptableObject {
     }
 
     private String getStub(String type, ByteArrayOutputStream wsdlbaos, String uri)
-            throws ScriptException {
+            throws ScriptException , IOException {
 
 
         ByteArrayOutputStream stubOutStream = new ByteArrayOutputStream();
-
+        InputStream wsdl20InputStream = null;
+        String returnValue;
         try {
             OMElement documentElement = (OMElement) XMLUtils.toOM(new ByteArrayInputStream(wsdlbaos.toByteArray()));
             OMNamespace documentElementNS = documentElement.getNamespace();
-            InputStream wsdl20InputStream = null;
             if (documentElementNS != null) {
                 if (Constants.NS_URI_WSDL11.equals(documentElementNS.getNamespaceURI())) {
                     wsdl20InputStream = XSLTTransformer.getWSDL2(new ByteArrayInputStream(wsdlbaos.toByteArray()), null);
@@ -151,13 +151,22 @@ public class WSStubHostObject extends ScriptableObject {
                 paramMap.put("e4x", "true");
             }
             XSLTTransformer.generateStub(sigStream, result, paramMap);
+            returnValue = stubOutStream.toString();
         } catch (XMLStreamException e) {
             throw new ScriptException(e);
         } catch (TransformerException e) {
             throw new ScriptException(e);
         } catch (ParserConfigurationException e) {
             throw new ScriptException(e);
+        } finally {
+            try {
+                wsdl20InputStream.close();
+                stubOutStream.close();
+            } catch (IOException e) {
+                log.error("Error while closing streams " + e.getMessage(), e);
+                throw e;
+            }
         }
-        return stubOutStream.toString();
+        return returnValue;
     }
 }
