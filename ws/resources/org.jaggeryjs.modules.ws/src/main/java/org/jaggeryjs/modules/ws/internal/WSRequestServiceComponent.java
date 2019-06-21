@@ -23,20 +23,28 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.utils.ConfigurationContextService;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
-
-/**
- * @scr.component name="mashup.javascript.hostobjects.wsrequest.dscomponent"" immediate="true"
- * @scr.reference name="carbon.core.configurationContextService"
- * interface="org.wso2.carbon.utils.ConfigurationContextService"
- * cardinality="1..1" policy="dynamic" bind="setConfigurationContextService" unbind="unsetConfigurationContextService"
- */
+@Component(
+         name = "mashup.javascript.hostobjects.wsrequest.dscomponent", 
+         immediate = true)
 public class WSRequestServiceComponent {
 
     private static final Log log = LogFactory.getLog(WSRequestServiceComponent.class);
 
     private static ConfigurationContextService configurationContextService = null;
 
+    @Reference(
+             name = "carbon.core.configurationContextService", 
+             service = org.wso2.carbon.utils.ConfigurationContextService.class, 
+             cardinality = ReferenceCardinality.MANDATORY, 
+             policy = ReferencePolicy.DYNAMIC, 
+             unbind = "unsetConfigurationContextService")
     protected void setConfigurationContextService(ConfigurationContextService configurationContextService) {
         WSRequestServiceComponent.configurationContextService = configurationContextService;
     }
@@ -46,7 +54,7 @@ public class WSRequestServiceComponent {
     }
 
     public static ConfigurationContext getConfigurationContext() throws AxisFault {
-        if(WSRequestServiceComponent.configurationContextService != null) {
+        if (WSRequestServiceComponent.configurationContextService != null) {
             return configurationContextService.getClientConfigContext();
         } else {
             String msg = "ConfigurationContextService cannot be found";
@@ -55,6 +63,8 @@ public class WSRequestServiceComponent {
         }
     }
 
+    @Activate
     protected void activate(ComponentContext context) {
     }
 }
+

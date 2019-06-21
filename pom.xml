@@ -14,7 +14,6 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
@@ -68,13 +67,13 @@
 
         <commons.lang.version>2.6</commons.lang.version>
 
-        <carbon.kernel.version>4.4.7</carbon.kernel.version>
-        <carbon.kernel.imp.pkg.version>[4.4.0, 5.0.0)</carbon.kernel.imp.pkg.version>
+        <carbon.kernel.version>4.5.0-m1</carbon.kernel.version>
+        <carbon.kernel.imp.pkg.version>[4.5.0, 5.0.0)</carbon.kernel.imp.pkg.version>
 
-        <jaggery.version>0.12.6</jaggery.version>
-        <jaggery.imp.pkg.version>[0.10.0, 1.0.0)</jaggery.imp.pkg.version>
+        <jaggery.version>0.14.1</jaggery.version>
+        <jaggery.imp.pkg.version>[0.14.1, 1.0.0)</jaggery.imp.pkg.version>
 
-        <carbon.commons.version>4.3.2</carbon.commons.version>
+        <carbon.commons.version>4.7.0</carbon.commons.version>
 
         <rhino.version>1.7.0.R4.wso2v1</rhino.version>
         <rhino.imp.pkg.version>1.7.0.R4.wso2v1</rhino.imp.pkg.version>
@@ -93,10 +92,10 @@
         <xmlsec.version>1.5.8</xmlsec.version>
         <imp.pkg.version.xmlsec>[1.4.2, 2.0.0)</imp.pkg.version.xmlsec>
 
-        <axis2.osgi.version>1.6.1.wso2v12</axis2.osgi.version>
-        <axiom.osgi.version>1.2.11.wso2v6</axiom.osgi.version>
+        <axis2.osgi.version>1.6.1-wso2v37</axis2.osgi.version>
+        <axiom.osgi.version>1.2.11-wso2v16</axiom.osgi.version>
         <xmlschema.osgi.version>1.4.7.wso2v3</xmlschema.osgi.version>
-        <rampart.osgi.version>1.6.1.wso2v16</rampart.osgi.version>
+        <rampart.osgi.version>1.6.1-wso2v36</rampart.osgi.version>
         <wss4j.osgi.version>1.5.11.wso2v11</wss4j.osgi.version>
 
         <!-- jaggery modules -->
@@ -108,6 +107,8 @@
         <oauth.module.version>1.5.9-SNAPSHOT</oauth.module.version>
         <handlebars.version>1.5.9-SNAPSHOT</handlebars.version>
         <markdown.version>1.5.9-SNAPSHOT</markdown.version>
+    <apache.felix.scr.ds.annotations.version>1.2.4</apache.felix.scr.ds.annotations.version>
+        <maven.scr.plugin.version>1.26.0</maven.scr.plugin.version>
     </properties>
 
     <build>
@@ -119,11 +120,7 @@
         </extensions>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.wso2.maven</groupId>
-                    <artifactId>carbon-p2-plugin</artifactId>
-                    <version>${carbon.p2.plugin.version}</version>
-                </plugin>
+                
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-scr-plugin</artifactId>
@@ -150,6 +147,19 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${maven-resources-plugin.version}</version>
+                </plugin>
+            <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-scr-plugin</artifactId>
+                    <version>${maven.scr.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>generate-scr-scrdescriptor</id>
+                            <goals>
+                                <goal>scr</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -383,6 +393,11 @@
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${commons.lang.version}</version>
+            </dependency>
+        <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
+                <version>${apache.felix.scr.ds.annotations.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
