@@ -57,7 +57,7 @@
     <properties>
         <project.scm.id>github-scm</project.scm.id>
         <maven-src-plugin.version>1.7.2</maven-src-plugin.version>
-        <maven-bunlde-plugin.version>2.3.5</maven-bunlde-plugin.version>
+        <maven-bunlde-plugin.version>3.2.0</maven-bunlde-plugin.version>
         <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
         <carbon.p2.plugin.version>1.5.4</carbon.p2.plugin.version>
         <maven-wagon-ssh.version>2.1</maven-wagon-ssh.version>
@@ -68,13 +68,13 @@
 
         <commons.lang.version>2.6</commons.lang.version>
 
-        <carbon.kernel.version>4.5.0-m1</carbon.kernel.version>
+        <carbon.kernel.version>4.5.0-m3</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.5.0, 5.0.0)</carbon.kernel.imp.pkg.version>
 
-        <jaggery.version>0.14.1</jaggery.version>
+        <jaggery.version>0.14.3</jaggery.version>
         <jaggery.imp.pkg.version>[0.14.1, 1.0.0)</jaggery.imp.pkg.version>
 
-        <carbon.commons.version>4.7.0</carbon.commons.version>
+        <carbon.commons.version>4.7.2</carbon.commons.version>
 
         <rhino.version>1.7.0.R4.wso2v1</rhino.version>
         <rhino.imp.pkg.version>1.7.0.R4.wso2v1</rhino.imp.pkg.version>
@@ -110,6 +110,7 @@
         <markdown.version>1.6.1-SNAPSHOT</markdown.version>
     <apache.felix.scr.ds.annotations.version>1.2.4</apache.felix.scr.ds.annotations.version>
         <maven.scr.plugin.version>1.26.0</maven.scr.plugin.version>
+        <pax.logging.api.version>1.10.1</pax.logging.api.version>
     </properties>
 
     <build>
@@ -121,20 +122,6 @@
         </extensions>
         <pluginManagement>
             <plugins>
-                
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-scr-plugin</artifactId>
-                    <version>${maven-src-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>generate-scr-scrdescriptor</id>
-                            <goals>
-                                <goal>scr</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
@@ -148,19 +135,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${maven-resources-plugin.version}</version>
-                </plugin>
-            <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-scr-plugin</artifactId>
-                    <version>${maven.scr.plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>generate-scr-scrdescriptor</id>
-                            <goals>
-                                <goal>scr</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -289,6 +263,12 @@
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.utils</artifactId>
                 <version>${carbon.kernel.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.wso2.carbon</groupId>
+                        <artifactId>org.wso2.carbon.logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.jaggeryjs</groupId>
@@ -321,9 +301,9 @@
                 <version>${jaggery.version}</version>
             </dependency>
             <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>${commons.logging.version}</version>
+                <groupId>org.ops4j.pax.logging</groupId>
+                <artifactId>pax-logging-api</artifactId>
+                <version>${pax.logging.api.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jaggeryjs.modules.sso</groupId>
@@ -354,6 +334,12 @@
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.core</artifactId>
                 <version>${carbon.kernel.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.wso2.carbon</groupId>
+                        <artifactId>org.wso2.carbon.logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.jaggeryjs.modules.uuid</groupId>
