@@ -3,6 +3,9 @@ package org.jaggeryjs.modules.ws.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -45,7 +48,7 @@ public class XSLTTransformer {
                 XSLTTransformer.class.getClassLoader().getResourceAsStream(WSDL2SIG_XSL_LOCATION);
 
         Source wsdl2sigXSLTSource = new StreamSource(sigStream);
-        DocumentBuilder docB = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilder docB = getSecuredDocumentBuilder(false);
         Document docSig = docB.newDocument();
         Result resultSig = new DOMResult(docSig);
         transform(wsdlSource, wsdl2sigXSLTSource, resultSig, paramMap, new URIResolver() {
@@ -89,7 +92,7 @@ public class XSLTTransformer {
 
         Source wsdl10Source = new StreamSource(wsdl1InStream);
 
-        DocumentBuilder docB = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilder docB = getSecuredDocumentBuilder(false);
         Document docWSDL = docB.newDocument();
         Result resultWSDL20 = new DOMResult(docWSDL);
 
@@ -135,6 +138,7 @@ public class XSLTTransformer {
                                  URIResolver uriResolver) throws TransformerException {
         try {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             transformerFactory.setURIResolver(uriResolver);
             Transformer transformer = transformerFactory.newTransformer(xslIn);
             if (paramMap != null) {
@@ -150,5 +154,31 @@ public class XSLTTransformer {
             log.error(e.getMessage(), e);
             throw e;
         }
+    }
+
+    /**
+     * This method provides a secured document builder which will secure XXE attacks.
+     *
+     * @param setIgnoreComments whether to set setIgnoringComments in DocumentBuilderFactory.
+     * @return DocumentBuilder
+     * @throws ParserConfigurationException
+     */
+    public static DocumentBuilder getSecuredDocumentBuilder(boolean setIgnoreComments) throws
+            ParserConfigurationException {
+
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setIgnoringComments(setIgnoreComments);
+        documentBuilderFactory.setNamespaceAware(true);
+        documentBuilderFactory.setExpandEntityReferences(false);
+        documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        documentBuilder.setEntityResolver(new EntityResolver() {
+            @Override
+            public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+
+                throw new SAXException("Possible XML External Entity (XXE) attack. Skip resolving entity");
+            }
+        });
+        return documentBuilder;
     }
 }
