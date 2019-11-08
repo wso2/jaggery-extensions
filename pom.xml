@@ -68,10 +68,10 @@
 
         <commons.lang.version>2.6</commons.lang.version>
 
-        <carbon.kernel.version>4.5.0</carbon.kernel.version>
+        <carbon.kernel.version>4.5.2</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.5.0, 5.0.0)</carbon.kernel.imp.pkg.version>
 
-        <jaggery.version>0.14.11</jaggery.version>
+        <jaggery.version>0.14.12</jaggery.version>
         <jaggery.imp.pkg.version>[0.14.1, 1.0.0)</jaggery.imp.pkg.version>
 
         <carbon.commons.version>4.7.11</carbon.commons.version>
