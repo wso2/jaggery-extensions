@@ -1386,12 +1386,11 @@ public class WSRequestHostObject extends ScriptableObject {
                 policy = axisBindingMessage.getEffectivePolicy();
             } else if (useUT) {
                 String xmlPath = "scenarios/scenario1-policy.xml";
-                try {
-                    InputStream policyXMLStream = WSRequestHostObject.class.
-                            getClassLoader().getResourceAsStream(xmlPath);
+                try (InputStream policyXMLStream = WSRequestHostObject.class.
+                        getClassLoader().getResourceAsStream(xmlPath)) {
                     StAXOMBuilder builder = new StAXOMBuilder(policyXMLStream);
                     policy = PolicyEngine.getPolicy(builder.getDocumentElement());
-                } catch (XMLStreamException e) {
+                } catch (XMLStreamException | IOException e) {
                     String message = "Error loading/parsing default UT policy from the server";
                     log.error(message, e);
                     throw new ScriptException(message, e);
