@@ -44,27 +44,31 @@ public class XSLTTransformer {
             throws TransformerFactoryConfigurationError, TransformerException,
             ParserConfigurationException {
         Source wsdlSource = new StreamSource(wsdlInStream);
-        InputStream sigStream =
-                XSLTTransformer.class.getClassLoader().getResourceAsStream(WSDL2SIG_XSL_LOCATION);
 
-        Source wsdl2sigXSLTSource = new StreamSource(sigStream);
-        DocumentBuilder docB = getSecuredDocumentBuilder(false);
-        Document docSig = docB.newDocument();
-        Result resultSig = new DOMResult(docSig);
-        transform(wsdlSource, wsdl2sigXSLTSource, resultSig, paramMap, new URIResolver() {
-            @Override
-            public Source resolve(String href, String base) throws TransformerException {
-                String xsd = href.substring(href.toLowerCase().indexOf("?xsd=") + 5);
-                try {
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    return new StreamSource(new ByteArrayInputStream(outputStream.toByteArray()));
-                } catch (Exception e) {
-                    log.error("Error while printing xsd : " + xsd, e);
-                    throw new TransformerException(e);
+        try (InputStream sigStream = XSLTTransformer.class.getClassLoader()
+                .getResourceAsStream(WSDL2SIG_XSL_LOCATION)) {
+            Source wsdl2sigXSLTSource = new StreamSource(sigStream);
+            DocumentBuilder docB = getSecuredDocumentBuilder(false);
+            Document docSig = docB.newDocument();
+            Result resultSig = new DOMResult(docSig);
+            transform(wsdlSource, wsdl2sigXSLTSource, resultSig, paramMap, new URIResolver() {
+                @Override
+                public Source resolve(String href, String base) throws TransformerException {
+                    String xsd = href.substring(href.toLowerCase().indexOf("?xsd=") + 5);
+                    try {
+                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                        return new StreamSource(new ByteArrayInputStream(outputStream.toByteArray()));
+                    } catch (Exception e) {
+                        log.error("Error while printing xsd : " + xsd, e);
+                        throw new TransformerException(e);
+                    }
                 }
-            }
-        });
-        return new DOMSource(docSig);
+            });
+            return new DOMSource(docSig);
+        } catch (IOException e) {
+            log.error("Error while handling inputstream: ", e);
+            throw new TransformerException(e);
+        }
     }
 
     public static void generateStub(Source xmlIn, Result result, Map paramMap)
