@@ -118,8 +118,7 @@ public class XSLTTransformer {
             ByteArrayOutputStream wsdl20OutputStream = new ByteArrayOutputStream();
             Source xmlSource = new DOMSource(docWSDL);
             Result outputTarget = new StreamResult(wsdl20OutputStream);
-            TransformerFactory factory = TransformerFactory.newInstance();
-            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            TransformerFactory factory = getTransformerFactory();
             Transformer transformer = factory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(xmlSource, outputTarget);
@@ -141,8 +140,7 @@ public class XSLTTransformer {
     public static void transform(Source xmlIn, Source xslIn, Result result, Map paramMap,
                                  URIResolver uriResolver) throws TransformerException {
         try {
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            TransformerFactory transformerFactory = getTransformerFactory();
             transformerFactory.setURIResolver(uriResolver);
             Transformer transformer = transformerFactory.newTransformer(xslIn);
             if (paramMap != null) {
@@ -184,5 +182,20 @@ public class XSLTTransformer {
             }
         });
         return documentBuilder;
+    }
+
+    /**
+     * Creates and returns a configured {@link TransformerFactory} instance.
+     *
+     * @return configured TransformerFactory
+     * @throws TransformerConfigurationException if the factory cannot be created
+     */
+    public static TransformerFactory getTransformerFactory() throws TransformerConfigurationException {
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        return transformerFactory;
     }
 }
